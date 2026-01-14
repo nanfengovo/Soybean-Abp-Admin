@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, reactive, watch } from 'vue';
-import { fetchAddUser, fetchUpdateUser } from '@/service/api';
+import { computed, reactive, ref, watch } from 'vue';
+import { fetchAddUser, fetchGetAssignableRoles, fetchGetUserRoles, fetchUpdateUser } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
 
@@ -35,7 +35,7 @@ const title = computed(() => {
   return titles[props.operateType];
 });
 
-type Model = Pick<Api.SystemManage.UserEdit, 'userName' | 'name' | 'surname' | 'email' | 'phoneNumber' | 'isActive'> & {
+type Model = Pick<Api.SystemManage.UserEdit, 'userName' | 'name' | 'email' | 'isActive' | 'roleNames'> & {
   password?: string;
   confirmPassword?: string;
 };
@@ -46,10 +46,9 @@ function createDefaultModel(): Model {
   return {
     userName: '',
     name: '',
-    surname: null,
     email: '',
-    phoneNumber: null,
     isActive: true,
+    roleNames: [],
     password: '',
     confirmPassword: ''
   };
@@ -75,7 +74,46 @@ const rules = computed<Record<RuleKey, App.Global.FormRule | App.Global.FormRule
   return baseRules as Record<RuleKey, App.Global.FormRule | App.Global.FormRule[]>;
 });
 
-function handleUpdateModelWhenEdit() {
+// 可分配的角色列表
+const assignableRoles = ref<Api.SystemManage.Role[]>([]);
+const loadingRoles = ref(false);
+
+// 获取可分配的角色列表
+async function fetchAssignableRoles() {
+  loadingRoles.value = true;
+  try {
+    const { data, error } = await fetchGetAssignableRoles();
+    if (!error && data) {
+      assignableRoles.value = data.items || [];
+    }
+  } finally {
+    loadingRoles.value = false;
+  }
+}
+
+// 获取用户的角色
+async function fetchUserRoles(userId: string) {
+  loadingRoles.value = true;
+  try {
+    const { data, error } = await fetchGetUserRoles(userId);
+    if (!error && data) {
+      // 从后端获取的角色列表中提取角色名称
+      model.roleNames = (data.items || []).map(role => role.name);
+    }
+  } finally {
+    loadingRoles.value = false;
+  }
+}
+
+// 角色选项
+const roleOptions = computed(() => {
+  return assignableRoles.value.map(role => ({
+    label: role.name,
+    value: role.name
+  }));
+});
+
+async function handleUpdateModelWhenEdit() {
   if (props.operateType === 'add') {
     Object.assign(model, createDefaultModel());
     return;
@@ -85,11 +123,13 @@ function handleUpdateModelWhenEdit() {
     Object.assign(model, {
       userName: props.rowData.userName,
       name: props.rowData.name,
-      surname: props.rowData.surname,
       email: props.rowData.email,
-      phoneNumber: props.rowData.phoneNumber,
-      isActive: props.rowData.isActive
+      isActive: props.rowData.isActive,
+      roleNames: [] // 先清空，等待从后端加载
     });
+
+    // 根据用户ID获取实际拥有的角色
+    await fetchUserRoles(props.rowData.id);
   }
 }
 
@@ -104,10 +144,9 @@ async function handleSubmit() {
   const submitData: Api.SystemManage.UserEdit = {
     userName: model.userName,
     name: model.name,
-    surname: model.surname,
     email: model.email,
-    phoneNumber: model.phoneNumber,
-    isActive: model.isActive
+    isActive: model.isActive,
+    roleNames: model.roleNames || []
   };
 
   // 添加用户时需要密码
@@ -142,25 +181,33 @@ watch(visible, () => {
   if (visible.value) {
     handleUpdateModelWhenEdit();
     restoreValidation();
+    fetchAssignableRoles();
   }
 });
 </script>
 
 <template>
-  <NDrawer v-model:show="visible" display-directive="show" :width="360">
+  <NDrawer v-model:show="visible" display-directive="show" :width="420">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <NForm ref="formRef" :model="model" :rules="rules" label-placement="left" :label-width="100">
         <NFormItem :label="$t('page.manage.user.userName')" path="userName">
           <NInput v-model:value="model.userName" :placeholder="$t('page.manage.user.form.userName')" />
         </NFormItem>
-        <NFormItem :label="$t('page.manage.user.nickName')" path="name">
-          <NInput v-model:value="model.name" :placeholder="$t('page.manage.user.form.nickName')" />
+        <NFormItem label="姓名" path="name">
+          <NInput v-model:value="model.name" placeholder="请输入姓名" />
         </NFormItem>
         <NFormItem :label="$t('page.manage.user.userEmail')" path="email">
           <NInput v-model:value="model.email" :placeholder="$t('page.manage.user.form.userEmail')" />
         </NFormItem>
-        <NFormItem :label="$t('page.manage.user.userPhone')" path="phoneNumber">
-          <NInput v-model:value="model.phoneNumber" :placeholder="$t('page.manage.user.form.userPhone')" />
+        <NFormItem label="角色" path="roleNames">
+          <NSelect
+            v-model:value="model.roleNames"
+            multiple
+            :options="roleOptions"
+            :loading="loadingRoles"
+            placeholder="请选择角色"
+            clearable
+          />
         </NFormItem>
         <NFormItem v-if="operateType === 'add'" label="密码" path="password">
           <NInput v-model:value="model.password" type="password" show-password-on="click" placeholder="请输入密码" />
@@ -174,7 +221,10 @@ watch(visible, () => {
           />
         </NFormItem>
         <NFormItem :label="$t('page.manage.user.userStatus')" path="isActive">
-          <NSwitch v-model:value="model.isActive" />
+          <NSwitch v-model:value="model.isActive">
+            <template #checked>启用</template>
+            <template #unchecked>禁用</template>
+          </NSwitch>
         </NFormItem>
       </NForm>
       <template #footer>

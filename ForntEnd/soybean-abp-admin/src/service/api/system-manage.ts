@@ -35,6 +35,31 @@ export function fetchDeleteUser(id: string) {
   });
 }
 
+/** get user roles */
+export function fetchGetUserRoles(id: string) {
+  return request<{ items: Api.SystemManage.Role[] }>({
+    url: `api/identity/users/${id}/roles`,
+    method: 'get'
+  });
+}
+
+/** get assignable roles */
+export function fetchGetAssignableRoles() {
+  return request<{ items: Api.SystemManage.Role[] }>({
+    url: 'api/identity/users/assignable-roles',
+    method: 'get'
+  });
+}
+
+/** assign roles to user */
+export function fetchAssignRolesToUser(id: string, data: { roleNames: string[] }) {
+  return request({
+    url: `api/identity/users/${id}/roles`,
+    method: 'put',
+    data
+  });
+}
+
 /** get role list */
 export function fetchGetRoleList(params?: Api.SystemManage.RoleSearchParams) {
   return request<Api.SystemManage.RoleList>({
@@ -143,5 +168,14 @@ export function fetchSyncPermissions(data: Api.SystemManage.SyncPermissionsReque
     url: 'api/app/menu/sync-permissions',
     method: 'post',
     data
+  });
+}
+
+/** get permissions */
+export function fetchGetPermissions(providerName: string, providerKey: string) {
+  return request<Api.SystemManage.PermissionList>({
+    url: 'api/permission-management/permissions',
+    method: 'get',
+    params: { providerName, providerKey }
   });
 }

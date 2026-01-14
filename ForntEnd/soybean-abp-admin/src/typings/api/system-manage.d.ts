@@ -216,9 +216,13 @@ declare namespace Api {
       sortOrder: number;
       /** is hidden (true = 隐藏, false = 可见) */
       isHidden: boolean;
-      /** permission name (permission code) */
+  /** permission name (permission code) */
       permissionName: string;
-      /** menu type: 0-目录, 1-菜单, 2-按钮 */
+      /** children menu */
+      children?: Menu[];
+    };
+
+    /** menu list */type: 0-目录, 1-菜单, 2-按钮 */
       menuType: MenuType;
       /** is external link */
       isExternal: boolean;
@@ -271,6 +275,31 @@ declare namespace Api {
     type SyncPermissionsRequest = {
       /** menu ids to sync */
       menuIds: string[];
+    };
+
+    /** permission grant info */
+    type PermissionGrantInfo = {
+      name: string;
+      displayName: string;
+      parentName: string | null;
+      isGranted: boolean;
+      allowedProviders: string[];
+      grantedProviders: { providerName: string; providerKey: string }[];
+    };
+
+    /** permission group */
+    type PermissionGroup = {
+      name: string;
+      displayName: string;
+      displayNameKey: string;
+      displayNameResource: string;
+      permissions: PermissionGrantInfo[];
+    };
+
+    /** permission list */
+    type PermissionList = {
+      entityDisplayName: string;
+      groups: PermissionGroup[];
     };
   }
 }

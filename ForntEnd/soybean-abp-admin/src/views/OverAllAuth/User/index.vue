@@ -1,10 +1,10 @@
 <script setup lang="tsx">
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { NButton, NCard, NDataTable, NPopconfirm, NTag } from 'naive-ui';
 import type { FlatResponseData } from '@sa/axios';
 import type { PaginationData } from '@sa/hooks';
 import { enableStatusRecord } from '@/constants/business';
-import { fetchDeleteUser, fetchGetUserList } from '@/service/api';
+import { fetchDeleteUser, fetchGetUserList, fetchGetUserRoles } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -20,6 +20,34 @@ const searchParams: Api.SystemManage.UserSearchParams = reactive({
   SkipCount: 0,
   MaxResultCount: 10
 });
+
+// 用户角色映射表（userId -> roleNames[]）
+const userRolesMap = reactive<Record<string, string[]>>({});
+
+// 批量获取用户角色
+async function fetchUsersRoles(users: Api.SystemManage.User[]) {
+  const promises = users.map(async user => {
+    try {
+      const { data, error } = await fetchGetUserRoles(user.id);
+      if (!error && data) {
+        const roleNames = (data.items || []).map(role => role.name);
+        userRolesMap[user.id] = roleNames;
+      }
+    } catch (err) {
+      console.error(`Failed to fetch roles for user ${user.id}:`, err);
+    }
+  });
+
+  await Promise.allSettled(promises);
+}
+
+async function getUsersWithRoles() {
+  const response = await fetchGetUserList(searchParams);
+  if (response.data && response.data.items) {
+    fetchUsersRoles(response.data.items);
+  }
+  return response;
+}
 
 // ABP 数据转换函数
 function abpTransform(
@@ -45,7 +73,7 @@ function abpTransform(
 }
 
 const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination } = useNaivePaginatedTable({
-  api: () => fetchGetUserList(searchParams),
+  api: getUsersWithRoles,
   transform: (response: FlatResponseData<any, Api.SystemManage.UserList>) => abpTransform(response),
   onPaginationParamsChange: params => {
     // ABP 使用 SkipCount 和 MaxResultCount
@@ -69,25 +97,48 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       key: 'userName',
       title: $t('page.manage.user.userName'),
       align: 'center',
-      minWidth: 100
+      minWidth: 120
     },
     {
-      key: 'name',
-      title: $t('page.manage.user.nickName'),
+      key: 'roleNames',
+      title: '拥有角色',
       align: 'center',
-      minWidth: 100
+      minWidth: 200,
+      render: row => {
+        const roleNames = userRolesMap[row.id] || [];
+        if (roleNames.length === 0) {
+          return '-';
+        }
+        return (
+          <div class="flex-center flex-wrap gap-4px">
+            {roleNames.map(roleName => (
+              <NTag key={roleName} type="info" size="small">
+                {roleName}
+              </NTag>
+            ))}
+          </div>
+        );
+      }
     },
     {
-      key: 'phoneNumber',
-      title: $t('page.manage.user.userPhone'),
+      key: 'creationTime',
+      title: '创建时间',
       align: 'center',
-      width: 120
+      width: 180,
+      render: row => {
+        if (!row.creationTime) return '-';
+        return new Date(row.creationTime).toLocaleString('zh-CN');
+      }
     },
     {
-      key: 'email',
-      title: $t('page.manage.user.userEmail'),
+      key: 'lastModificationTime',
+      title: '最后修改时间',
       align: 'center',
-      minWidth: 200
+      width: 180,
+      render: row => {
+        if (!row.lastModificationTime) return '-';
+        return new Date(row.lastModificationTime).toLocaleString('zh-CN');
+      }
     },
     {
       key: 'isActive',
