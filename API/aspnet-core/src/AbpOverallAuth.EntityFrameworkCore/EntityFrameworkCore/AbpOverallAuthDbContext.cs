@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AbpOverallAuth.Navigation;
+using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -51,6 +52,7 @@ public class AbpOverallAuthDbContext :
     public DbSet<Tenant> Tenants { get; set; }
     public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
 
+    public DbSet<Menu> Menus { get; set; }
     #endregion
 
     public AbpOverallAuthDbContext(DbContextOptions<AbpOverallAuthDbContext> options)
@@ -82,5 +84,10 @@ public class AbpOverallAuthDbContext :
         //    b.ConfigureByConvention(); //auto configure for the base class props
         //    //...
         //});
+
+        builder.Entity<Menu>(b =>
+        {
+            b.ToTable("tb_Menus");
+        });
     }
 }

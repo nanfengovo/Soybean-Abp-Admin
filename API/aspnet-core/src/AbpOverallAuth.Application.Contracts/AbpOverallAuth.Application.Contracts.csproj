@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AbpOverallAuth.Domain.Shared\AbpOverallAuth.Domain.Shared.csproj" />
+    <ProjectReference Include="..\AbpOverallAuth.Domain\AbpOverallAuth.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

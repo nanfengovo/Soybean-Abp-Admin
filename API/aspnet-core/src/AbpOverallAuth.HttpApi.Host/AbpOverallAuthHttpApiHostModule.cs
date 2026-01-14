@@ -1,5 +1,6 @@
 using AbpOverallAuth.EntityFrameworkCore;
 using AbpOverallAuth.MultiTenancy;
+using AbpOverallAuth.Navigation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Volo.Abp;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
@@ -74,10 +76,11 @@ public class AbpOverallAuthHttpApiHostModule : AbpModule
         Configure<AbpAntiForgeryOptions>(options =>
         {
             options.TokenCookie.Expiration = TimeSpan.Zero;
-            options.AutoValidate = false; //��ʾ����֤��α����
+            options.AutoValidate = false; //��ʾ����֤��α����
                                           //options.AutoValidateIgnoredHttpMethods.Remove("GET");
                                           //options.AutoValidateFilter =
                                           //    type => !type.Namespace.StartsWith("MyProject.MyIgnoredNamespace");
+
         });
     }
 
@@ -161,7 +164,22 @@ public class AbpOverallAuthHttpApiHostModule : AbpModule
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "AbpOverallAuth API", Version = "v1" });
                 options.DocInclusionPredicate((docName, description) => true);
                 options.CustomSchemaIds(type => type.FullName);
+                // 添加 XML 注释支持
+                var xmlPaths = GetXmlCommentsPaths();
+                foreach (var xmlPath in xmlPaths)
+                {
+                    if (File.Exists(xmlPath))
+                    {
+                        options.IncludeXmlComments(xmlPath);
+                    }
+                }
             });
+    }
+    private static List<string> GetXmlCommentsPaths()
+    {
+        var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var files = Directory.GetFiles(basePath, "*.xml");
+        return files.ToList();
     }
 
     private void ConfigureCors(ServiceConfigurationContext context, IConfiguration configuration)
@@ -229,5 +247,20 @@ public class AbpOverallAuthHttpApiHostModule : AbpModule
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
+
+        // 应用启动时同步菜单权限到权限系统
+        SyncPermissionsAsync(context).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    /// 同步菜单权限
+    /// </summary>
+    private async System.Threading.Tasks.Task SyncPermissionsAsync(ApplicationInitializationContext context)
+    {
+        using (var scope = context.ServiceProvider.CreateScope())
+        {
+            var synchronizer = scope.ServiceProvider.GetRequiredService<PermissionSynchronizer>();
+            await synchronizer.SyncAllPermissionsAsync();
+        }
     }
 }
