@@ -27,5 +27,6 @@ public class AbpOverallAuthApplicationModule : AbpModule
         {
             options.AddMaps<AbpOverallAuthApplicationModule>();
         });
+
     }
 }

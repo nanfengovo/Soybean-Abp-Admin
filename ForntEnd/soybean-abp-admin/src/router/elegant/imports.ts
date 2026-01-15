@@ -15,7 +15,6 @@ export const layouts: Record<RouteLayout, RouteComponent | (() => Promise<RouteC
 };
 
 export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<RouteComponent>)> = {
-  overallauth_permission: () => import("@/views/OverAllAuth/Permission/index.vue"),
   overallauth_role: () => import("@/views/OverAllAuth/Role/index.vue"),
   overallauth_user: () => import("@/views/OverAllAuth/User/index.vue"),
   system_dashboard: () => import("@/views/System/Dashboard/index.vue"),

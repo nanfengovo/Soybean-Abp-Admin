@@ -1,6 +1,5 @@
 using AbpOverallAuth.EntityFrameworkCore;
 using AbpOverallAuth.MultiTenancy;
-using AbpOverallAuth.Navigation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Extensions.DependencyInjection;
@@ -248,19 +247,6 @@ public class AbpOverallAuthHttpApiHostModule : AbpModule
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
 
-        // 应用启动时同步菜单权限到权限系统
-        SyncPermissionsAsync(context).GetAwaiter().GetResult();
     }
 
-    /// <summary>
-    /// 同步菜单权限
-    /// </summary>
-    private async System.Threading.Tasks.Task SyncPermissionsAsync(ApplicationInitializationContext context)
-    {
-        using (var scope = context.ServiceProvider.CreateScope())
-        {
-            var synchronizer = scope.ServiceProvider.GetRequiredService<PermissionSynchronizer>();
-            await synchronizer.SyncAllPermissionsAsync();
-        }
-    }
 }

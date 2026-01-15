@@ -88,17 +88,6 @@ export const generatedRoutes: GeneratedRoute[] = [
     },
     children: [
       {
-        name: 'overallauth_permission',
-        path: '/overallauth/permission',
-        component: 'view.overallauth_permission',
-        meta: {
-          title: 'overallauth_permission',
-          i18nKey: 'route.overallauth_permission',
-          order: 5,
-          icon: 'material-symbols:route'
-        }
-      },
-      {
         name: 'overallauth_role',
         path: '/overallauth/role',
         component: 'view.overallauth_role',
