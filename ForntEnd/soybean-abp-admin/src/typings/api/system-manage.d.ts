@@ -216,25 +216,9 @@ declare namespace Api {
       sortOrder: number;
       /** is hidden (true = 隐藏, false = 可见) */
       isHidden: boolean;
-  /** permission name (permission code) */
+      /** permission name (permission code) */
       permissionName: string;
       /** children menu */
-      children?: Menu[];
-    };
-
-    /** menu list */type: 0-目录, 1-菜单, 2-按钮 */
-      menuType: MenuType;
-      /** is external link */
-      isExternal: boolean;
-      /** external url */
-      externalUrl: string | null;
-      /** is enabled */
-      isEnabled: boolean;
-      /** remark (description) */
-      remark: string | null;
-      /** creation time */
-      creationTime: string;
-      /** children menus */
       children?: Menu[];
     };
 
@@ -300,6 +284,62 @@ declare namespace Api {
     type PermissionList = {
       entityDisplayName: string;
       groups: PermissionGroup[];
+    };
+
+    /** permission update item */
+    type PermissionUpdateItem = {
+      name: string;
+      isGranted: boolean;
+    };
+
+    /** update permissions request */
+    type UpdatePermissionsRequest = {
+      permissions: PermissionUpdateItem[];
+    };
+
+    /** location map search params */
+    type LocationMapSearchParams = {
+      /** 模糊查询字段 */
+      Filter?: string;
+      /** 排序字段 */
+      Sorting?: string;
+      /** 跳过记录数 */
+      SkipCount?: number;
+      /** 最大结果数 */
+      MaxResultCount?: number;
+    };
+
+    /** location map */
+    type LocationMap = {
+      /** id */
+      id: string;
+      /** 名称 */
+      name: string;
+      /** 机台点位 */
+      machinePoint: string;
+      /** AGV点位 */
+      agvPoint: string;
+      /** 描述 */
+      description: string;
+      /** 创建时间 */
+      creationTime?: string;
+      /** 最后修改时间 */
+      lastModificationTime?: string;
+    };
+
+    /** location map list */
+    type LocationMapList = Common.AbpPaginatingQueryRecord<LocationMap>;
+
+    /** location map edit */
+    type LocationMapEdit = {
+      /** 名称 */
+      name: string;
+      /** 机台点位 */
+      machinePoint: string;
+      /** AGV点位 */
+      agvPoint: string;
+      /** 描述 */
+      description?: string;
     };
   }
 }

@@ -3,7 +3,7 @@ import { reactive } from 'vue';
 import { NButton, NCard, NDataTable, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import type { FlatResponseData } from '@sa/axios';
 import type { PaginationData } from '@sa/hooks';
-import { fetchDeleteRole, fetchGetMenuList, fetchGetPermissions, fetchGetRoleList } from '@/service/api';
+import { fetchDeleteRole, fetchGetPermissions, fetchGetRoleList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -26,36 +26,36 @@ const permissionToMenuMap = reactive<Record<string, string>>({});
 const rolePermissionsMap = reactive<Record<string, { menus: string[]; others: string[] }>>({});
 
 // 保存初始化 Promise
-let initPermissionMapPromise: Promise<void> | null = null;
+// let initPermissionMapPromise: Promise<void> | null = null;
 
 // 初始化权限映射
-async function initPermissionMap() {
-  // 获取所有菜单（假设不超过1000个）
-  const { data, error } = await fetchGetMenuList({ MaxResultCount: 1000 });
-  if (!error && data) {
-    const buildMap = (menus: Api.SystemManage.Menu[]) => {
-      menus.forEach(menu => {
-        if (menu.permissionName) {
-          permissionToMenuMap[menu.permissionName] = menu.name;
-        }
-        if (menu.children && menu.children.length > 0) {
-          buildMap(menu.children);
-        }
-      });
-    };
-    buildMap(data.items || []);
-  }
-}
+// async function initPermissionMap() {
+//   // 获取所有菜单（假设不超过1000个）
+//   const { data, error } = await fetchGetMenuList({ MaxResultCount: 1000 });
+//   if (!error && data) {
+//     const buildMap = (menus: Api.SystemManage.Menu[]) => {
+//       menus.forEach(menu => {
+//         if (menu.permissionName) {
+//           permissionToMenuMap[menu.permissionName] = menu.name;
+//         }
+//         if (menu.children && menu.children.length > 0) {
+//           buildMap(menu.children);
+//         }
+//       });
+//     };
+//     buildMap(data.items || []);
+//   }
+// }
 
 // 初始化时调用
-initPermissionMapPromise = initPermissionMap();
+// initPermissionMapPromise = initPermissionMap();
 
 // 批量获取角色权限
 async function fetchRolesPermissions(roles: Api.SystemManage.Role[]) {
   // 确保映射表加载完成
-  if (initPermissionMapPromise) {
-    await initPermissionMapPromise;
-  }
+  // if (initPermissionMapPromise) {
+  //   await initPermissionMapPromise;
+  // }
 
   const promises = roles.map(async role => {
     try {
@@ -65,8 +65,8 @@ async function fetchRolesPermissions(roles: Api.SystemManage.Role[]) {
         const menus: string[] = [];
         const others: string[] = [];
 
-        data.groups.forEach(group => {
-          group.permissions.forEach(p => {
+        data.groups.forEach((group: Api.SystemManage.PermissionGroup) => {
+          group.permissions.forEach((p: Api.SystemManage.PermissionGrantInfo) => {
             if (p.isGranted) {
               if (permissionToMenuMap[p.name]) {
                 menus.push(permissionToMenuMap[p.name]);
@@ -79,8 +79,8 @@ async function fetchRolesPermissions(roles: Api.SystemManage.Role[]) {
 
         rolePermissionsMap[role.id] = { menus, others };
       }
-    } catch (err) {
-      console.error(`Failed to fetch permissions for role ${role.name}:`, err);
+    } catch {
+      // ignore
     }
   });
 

@@ -1,58 +1,29 @@
 <script setup lang="tsx">
 import { reactive } from 'vue';
-import { NButton, NCard, NDataTable, NPopconfirm, NTag } from 'naive-ui';
+import { NButton, NCard, NDataTable, NPopconfirm, NSpace } from 'naive-ui';
 import type { FlatResponseData } from '@sa/axios';
 import type { PaginationData } from '@sa/hooks';
-import { enableStatusRecord } from '@/constants/business';
-import { fetchDeleteUser, fetchGetUserList, fetchGetUserRoles } from '@/service/api';
+import { fetchDeleteLocationMap, fetchGetLocationMapList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
 import TableHeaderOperation from '@/components/advanced/table-header-operation.vue';
-import UserSearch from './modules/user-search.vue';
-import UserOperateDrawer from './modules/user-operate-drawer.vue';
+import LocationMapSearch from './modules/location-map-search.vue';
+import LocationMapOperateDrawer from './modules/location-map-operate-drawer.vue';
 
 const appStore = useAppStore();
 
-const searchParams: Api.SystemManage.UserSearchParams = reactive({
+const searchParams: Api.SystemManage.LocationMapSearchParams = reactive({
   Filter: '',
   Sorting: '',
   SkipCount: 0,
   MaxResultCount: 10
 });
 
-// 用户角色映射表（userId -> roleNames[]）
-const userRolesMap = reactive<Record<string, string[]>>({});
-
-// 批量获取用户角色
-async function fetchUsersRoles(users: Api.SystemManage.User[]) {
-  const promises = users.map(async user => {
-    try {
-      const { data, error } = await fetchGetUserRoles(user.id);
-      if (!error && data) {
-        const roleNames = (data.items || []).map(role => role.name);
-        userRolesMap[user.id] = roleNames;
-      }
-    } catch {
-      // ignore
-    }
-  });
-
-  await Promise.allSettled(promises);
-}
-
-async function getUsersWithRoles() {
-  const response = await fetchGetUserList(searchParams);
-  if (response.data && response.data.items) {
-    fetchUsersRoles(response.data.items);
-  }
-  return response;
-}
-
 // ABP 数据转换函数
 function abpTransform(
-  response: FlatResponseData<any, Api.SystemManage.UserList>
-): PaginationData<Api.SystemManage.User> {
+  response: FlatResponseData<any, Api.SystemManage.LocationMapList>
+): PaginationData<Api.SystemManage.LocationMap> {
   const { data, error } = response;
 
   if (!error && data) {
@@ -73,8 +44,8 @@ function abpTransform(
 }
 
 const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagination } = useNaivePaginatedTable({
-  api: getUsersWithRoles,
-  transform: (response: FlatResponseData<any, Api.SystemManage.UserList>) => abpTransform(response),
+  api: () => fetchGetLocationMapList(searchParams),
+  transform: (response: FlatResponseData<any, Api.SystemManage.LocationMapList>) => abpTransform(response),
   onPaginationParamsChange: params => {
     // ABP 使用 SkipCount 和 MaxResultCount
     searchParams.SkipCount = ((params.page ?? 1) - 1) * (params.pageSize ?? 10);
@@ -94,30 +65,30 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       render: (_, index) => index + 1
     },
     {
-      key: 'userName',
-      title: $t('page.manage.user.userName'),
+      key: 'name',
+      title: '名称',
       align: 'center',
       minWidth: 120
     },
     {
-      key: 'roleNames',
-      title: '拥有角色',
+      key: 'machinePoint',
+      title: '机台点位',
+      align: 'center',
+      minWidth: 120
+    },
+    {
+      key: 'agvPoint',
+      title: 'AGV点位',
+      align: 'center',
+      minWidth: 120
+    },
+    {
+      key: 'description',
+      title: '描述',
       align: 'center',
       minWidth: 200,
-      render: row => {
-        const roleNames = userRolesMap[row.id] || [];
-        if (roleNames.length === 0) {
-          return '-';
-        }
-        return (
-          <div class="flex-center flex-wrap gap-4px">
-            {roleNames.map(roleName => (
-              <NTag key={roleName} type="info" size="small">
-                {roleName}
-              </NTag>
-            ))}
-          </div>
-        );
+      ellipsis: {
+        tooltip: true
       }
     },
     {
@@ -127,36 +98,8 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       width: 180,
       render: row => {
         if (!row.creationTime) return '-';
-        return new Date(row.creationTime).toLocaleString('zh-CN');
-      }
-    },
-    {
-      key: 'lastModificationTime',
-      title: '最后修改时间',
-      align: 'center',
-      width: 180,
-      render: row => {
-        if (!row.lastModificationTime) return '-';
-        return new Date(row.lastModificationTime).toLocaleString('zh-CN');
-      }
-    },
-    {
-      key: 'isActive',
-      title: $t('page.manage.user.userStatus'),
-      align: 'center',
-      width: 100,
-      render: row => {
-        // ABP 使用 isActive 字段，转换为对应的状态
-        const status: Api.Common.EnableStatus = row.isActive ? '1' : '2';
-
-        const tagMap: Record<string, NaiveUI.ThemeColor> = {
-          '1': 'success',
-          '2': 'warning'
-        };
-
-        const label = $t(enableStatusRecord[status]);
-
-        return <NTag type={tagMap[status]}>{label}</NTag>;
+        const date = new Date(row.creationTime);
+        return date.toLocaleString('zh-CN');
       }
     },
     {
@@ -165,7 +108,7 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       align: 'center',
       width: 130,
       render: row => (
-        <div class="flex-center gap-8px">
+        <NSpace justify="center">
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             {$t('common.edit')}
           </NButton>
@@ -179,23 +122,14 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
               )
             }}
           </NPopconfirm>
-        </div>
+        </NSpace>
       )
     }
   ]
 });
 
-const {
-  drawerVisible,
-  operateType,
-  editingData,
-  handleAdd,
-  handleEdit,
-  checkedRowKeys,
-  onBatchDeleted,
-  onDeleted
-  // closeDrawer
-} = useTableOperate(data, 'id', getData);
+const { drawerVisible, operateType, editingData, handleAdd, handleEdit, checkedRowKeys, onBatchDeleted, onDeleted } =
+  useTableOperate(data, 'id', getData);
 
 async function handleBatchDelete() {
   if (checkedRowKeys.value.length === 0) return;
@@ -204,22 +138,26 @@ async function handleBatchDelete() {
     title: '确认删除',
     content: `确认删除选中的 ${checkedRowKeys.value.length} 条数据吗？`,
     positiveText: '确认',
+    negativeText: '取消',
     onPositiveClick: async () => {
-      // 1. 同时发起请求并等待全部完成
-      const deletePromises = checkedRowKeys.value.map(id => fetchDeleteUser(id));
-      await Promise.all(deletePromises);
+      const deletePromises = checkedRowKeys.value.map(id => fetchDeleteLocationMap(id));
+      const results = await Promise.allSettled(deletePromises);
 
-      window.$message?.success('批量删除成功');
+      const failedCount = results.filter(r => r.status === 'rejected').length;
 
-      // 2. 全部删除完成后再刷新列表并清空选中项
+      if (failedCount > 0) {
+        window.$message?.warning(`成功删除 ${results.length - failedCount} 条，失败 ${failedCount} 条`);
+      } else {
+        window.$message?.success('批量删除成功');
+      }
+
       onBatchDeleted();
-      checkedRowKeys.value = [];
     }
   });
 }
 
 async function handleDelete(id: string) {
-  const { error } = await fetchDeleteUser(id);
+  const { error } = await fetchDeleteLocationMap(id);
   if (!error) {
     onDeleted();
   }
@@ -232,8 +170,8 @@ function edit(id: string) {
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <UserSearch v-model:model="searchParams" @search="getDataByPage" />
-    <NCard :title="$t('page.manage.user.title')" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
+    <LocationMapSearch v-model:model="searchParams" @search="getDataByPage" />
+    <NCard title="机台点位映射" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"
@@ -257,7 +195,7 @@ function edit(id: string) {
         :pagination="mobilePagination"
         class="sm:h-full"
       />
-      <UserOperateDrawer
+      <LocationMapOperateDrawer
         v-model:visible="drawerVisible"
         :operate-type="operateType"
         :row-data="editingData"

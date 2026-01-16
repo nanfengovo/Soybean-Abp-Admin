@@ -1,6 +1,6 @@
 const local: App.I18n.Schema = {
   system: {
-    title: 'Soybean 管理系统',
+    title: 'RCS 管理系统',
     updateTitle: '系统版本更新通知',
     updateContent: '检测到系统有新版本发布，是否立即刷新页面？',
     updateConfirm: '立即刷新',
@@ -228,9 +228,10 @@ const local: App.I18n.Schema = {
     system: '系统管理',
     system_dashboard: '仪表盘',
     overallauth: '权限管理',
-    overallauth_permission: '权限设置',
     overallauth_role: '角色管理',
-    overallauth_user: '用户管理'
+    overallauth_user: '用户管理',
+    datamanage: '数据管理',
+    datamanage_loactionmap: '机台点位映射'
   },
   page: {
     login: {

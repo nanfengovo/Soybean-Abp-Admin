@@ -40,6 +40,30 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
+    name: 'datamanage',
+    path: '/datamanage',
+    component: 'layout.base',
+    meta: {
+      title: 'datamanage',
+      i18nKey: 'route.datamanage',
+      order: 2,
+      icon: 'mdi:database-settings'
+    },
+    children: [
+      {
+        name: 'datamanage_loactionmap',
+        path: '/datamanage/loactionmap',
+        component: 'view.datamanage_loactionmap',
+        meta: {
+          title: 'datamanage_loactionmap',
+          i18nKey: 'route.datamanage_loactionmap',
+          order: 1,
+          icon: 'mdi:map-marker-path'
+        }
+      }
+    ]
+  },
+  {
     name: 'home',
     path: '/home',
     component: 'layout.base$view.home',

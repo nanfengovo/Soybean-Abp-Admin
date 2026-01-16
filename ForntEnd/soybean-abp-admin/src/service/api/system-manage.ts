@@ -112,57 +112,57 @@ export function fetchDeleteRole(id: string) {
 }
 
 /** get menu list */
-export function fetchGetMenuList(params?: Api.SystemManage.MenuSearchParams) {
-  return request<Api.SystemManage.MenuList>({
-    url: 'api/app/menu',
-    method: 'get',
-    params
-  });
-}
+// export function fetchGetMenuList(params?: Api.SystemManage.MenuSearchParams) {
+//   return request<Api.SystemManage.MenuList>({
+//     url: 'api/app/menu',
+//     method: 'get',
+//     params
+//   });
+// }
 
-/** get my menus (current user's accessible menus) */
-export function fetchGetMyMenus() {
-  return request<Api.SystemManage.MenuList>({
-    url: 'api/app/menu/my-menus',
-    method: 'get'
-  });
-}
+// /** get my menus (current user's accessible menus) */
+// export function fetchGetMyMenus() {
+//   return request<Api.SystemManage.MenuList>({
+//     url: 'api/app/menu/my-menus',
+//     method: 'get'
+//   });
+// }
 
-/** get menu by id */
-export function fetchGetMenu(id: string) {
-  return request<Api.SystemManage.Menu>({
-    url: `api/app/menu/${id}`,
-    method: 'get'
-  });
-}
+// /** get menu by id */
+// export function fetchGetMenu(id: string) {
+//   return request<Api.SystemManage.Menu>({
+//     url: `api/app/menu/${id}`,
+//     method: 'get'
+//   });
+// }
 
-/** create menu */
-export function fetchAddMenu(data: Api.SystemManage.MenuEdit) {
-  return request<Api.SystemManage.Menu>({
-    url: 'api/app/menu',
-    method: 'post',
-    data
-  });
-}
+// /** create menu */
+// export function fetchAddMenu(data: Api.SystemManage.MenuEdit) {
+//   return request<Api.SystemManage.Menu>({
+//     url: 'api/app/menu',
+//     method: 'post',
+//     data
+//   });
+// }
 
-/** update menu */
-export function fetchUpdateMenu(id: string, data: Api.SystemManage.MenuEdit) {
-  return request<Api.SystemManage.Menu>({
-    url: `api/app/menu/${id}`,
-    method: 'put',
-    data
-  });
-}
+// /** update menu */
+// export function fetchUpdateMenu(id: string, data: Api.SystemManage.MenuEdit) {
+//   return request<Api.SystemManage.Menu>({
+//     url: `api/app/menu/${id}`,
+//     method: 'put',
+//     data
+//   });
+// }
 
-/** delete menu */
-export function fetchDeleteMenu(id: string) {
-  return request({
-    url: `api/app/menu/${id}`,
-    method: 'delete'
-  });
-}
+// /** delete menu */
+// export function fetchDeleteMenu(id: string) {
+//   return request({
+//     url: `api/app/menu/${id}`,
+//     method: 'delete'
+//   });
+// }
 
-/** sync permissions from menus */
+// /** sync permissions from menus */
 export function fetchSyncPermissions(data: Api.SystemManage.SyncPermissionsRequest) {
   return request({
     url: 'api/app/menu/sync-permissions',
@@ -177,5 +177,62 @@ export function fetchGetPermissions(providerName: string, providerKey: string) {
     url: 'api/permission-management/permissions',
     method: 'get',
     params: { providerName, providerKey }
+  });
+}
+
+/** update permissions */
+export function fetchUpdatePermissions(
+  providerName: string,
+  providerKey: string,
+  data: Api.SystemManage.UpdatePermissionsRequest
+) {
+  return request({
+    url: 'api/permission-management/permissions',
+    method: 'put',
+    params: { providerName, providerKey },
+    data
+  });
+}
+
+/** get location map list */
+export function fetchGetLocationMapList(params?: Api.SystemManage.LocationMapSearchParams) {
+  return request<Api.SystemManage.LocationMapList>({
+    url: 'api/app/location-map',
+    method: 'get',
+    params
+  });
+}
+
+/** get location map by id */
+export function fetchGetLocationMap(id: string) {
+  return request<Api.SystemManage.LocationMap>({
+    url: `api/app/location-map/${id}`,
+    method: 'get'
+  });
+}
+
+/** create location map */
+export function fetchAddLocationMap(data: Api.SystemManage.LocationMapEdit) {
+  return request<Api.SystemManage.LocationMap>({
+    url: 'api/app/location-map',
+    method: 'post',
+    data
+  });
+}
+
+/** update location map */
+export function fetchUpdateLocationMap(id: string, data: Api.SystemManage.LocationMapEdit) {
+  return request<Api.SystemManage.LocationMap>({
+    url: `api/app/location-map/${id}`,
+    method: 'put',
+    data
+  });
+}
+
+/** delete location map */
+export function fetchDeleteLocationMap(id: string) {
+  return request({
+    url: `api/app/location-map/${id}`,
+    method: 'delete'
   });
 }

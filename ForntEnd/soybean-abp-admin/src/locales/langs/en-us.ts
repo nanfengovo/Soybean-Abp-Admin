@@ -1,6 +1,6 @@
 const local: App.I18n.Schema = {
   system: {
-    title: 'SoybeanAdmin',
+    title: 'RCS Admin',
     updateTitle: 'System Version Update Notification',
     updateContent: 'A new version of the system has been detected. Do you want to refresh the page immediately?',
     updateConfirm: 'Refresh immediately',
@@ -232,9 +232,10 @@ const local: App.I18n.Schema = {
     system: 'System Management',
     system_dashboard: 'Dashboard',
     overallauth: 'Overall Auth',
-    overallauth_permission: 'Permission Setting',
     overallauth_role: 'Role Management',
-    overallauth_user: 'User Management'
+    overallauth_user: 'User Management',
+    datamanage: 'Data Management',
+    datamanage_loactionmap: 'Location Map'
   },
   page: {
     login: {
