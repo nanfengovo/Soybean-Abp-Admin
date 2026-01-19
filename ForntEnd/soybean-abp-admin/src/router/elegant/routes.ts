@@ -58,7 +58,8 @@ export const generatedRoutes: GeneratedRoute[] = [
           title: 'datamanage_loactionmap',
           i18nKey: 'route.datamanage_loactionmap',
           order: 1,
-          icon: 'mdi:map-marker-path'
+          icon: 'mdi:map-marker-path',
+          permissions: ['AbpOverallAuth.LocationMap']
         }
       }
     ]
@@ -119,7 +120,8 @@ export const generatedRoutes: GeneratedRoute[] = [
           title: 'overallauth_role',
           i18nKey: 'route.overallauth_role',
           order: 4,
-          icon: 'carbon:user-role'
+          icon: 'carbon:user-role',
+          permissions: ['AbpIdentity.Roles']
         }
       },
       {
@@ -130,7 +132,8 @@ export const generatedRoutes: GeneratedRoute[] = [
           title: 'overallauth_user',
           i18nKey: 'route.overallauth_user',
           order: 3,
-          icon: 'ic:round-manage-accounts'
+          icon: 'ic:round-manage-accounts',
+          permissions: ['AbpIdentity.Users']
         }
       }
     ]

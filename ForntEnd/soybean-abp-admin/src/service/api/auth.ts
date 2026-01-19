@@ -37,6 +37,11 @@ export function fetchGetUserInfo(userName: string) {
   return request<any>({ url: `/api/identity/users/by-username/${userName}` });
 }
 
+/** 获取当前登录用户信息（用于页面刷新恢复） */
+export function fetchGetCurrentUser() {
+  return request<any>({ url: '/api/abp/application-configuration' });
+}
+
 export function fetchGetRoleInfo(userId: string) {
   // 这里的 url 指向 ABP 的获取用户角色信息的接口
   return request<any>({ url: `/api/identity/users/${userId}/roles` });

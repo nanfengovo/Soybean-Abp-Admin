@@ -2,7 +2,7 @@ import { computed, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { defineStore } from 'pinia';
 import { useLoading } from '@sa/hooks';
-import { fetchGetPermissions, fetchGetRoleInfo, fetchGetUserInfo, fetchLogin } from '@/service/api';
+import { fetchGetCurrentUser, fetchGetPermissions, fetchGetRoleInfo, fetchGetUserInfo, fetchLogin } from '@/service/api';
 import { useRouterPush } from '@/hooks/common/router';
 import { localStg } from '@/utils/storage';
 import { SetupStoreId } from '@/enum';
@@ -187,17 +187,49 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     }
   }
 
-  // async function initUserInfo() {
-  //   const hasToken = getToken();
+  /** 初始化用户信息（用于页面刷新时恢复用户状态） */
+  async function initUserInfo() {
+    const hasToken = getToken();
+    console.log('initUserInfo - hasToken:', hasToken);
 
-  //   if (hasToken) {
-  //     const pass = await getUserInfo();
+    if (hasToken) {
+      try {
+        // 使用 ABP 的 application-configuration 接口获取当前用户信息
+        const { data, error } = await fetchGetCurrentUser();
+        console.log('initUserInfo - fetchGetCurrentUser response:', { data, error });
 
-  //     if (!pass) {
-  //       resetStore();
-  //     }
-  //   }
-  // }
+        if (!error && data?.currentUser?.isAuthenticated) {
+          const currentUser = data.currentUser;
+          userInfo.userId = currentUser.id || '';
+          userInfo.userName = currentUser.userName || '';
+          userInfo.roles = currentUser.roles || [];
+
+          console.log('initUserInfo - userInfo after update:', {
+            userId: userInfo.userId,
+            userName: userInfo.userName,
+            roles: userInfo.roles
+          });
+
+          // 获取用户权限（通过角色获取）
+          await getUserPermissions(userInfo.roles);
+
+          console.log('initUserInfo - buttons after getUserPermissions:', userInfo.buttons);
+        } else {
+          console.log('initUserInfo - user not authenticated, clearing auth storage');
+          clearAuthStorage();
+          token.value = '';
+          // 重置路由状态，以便重新登录后能重新初始化路由
+          routeStore.setIsInitAuthRoute(false);
+        }
+      } catch (err) {
+        console.error('initUserInfo - error:', err);
+        clearAuthStorage();
+        token.value = '';
+        // 重置路由状态，以便重新登录后能重新初始化路由
+        routeStore.setIsInitAuthRoute(false);
+      }
+    }
+  }
 
   return {
     token,
@@ -206,7 +238,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     isLogin,
     loginLoading,
     resetStore,
-    login
-    // initUserInfo
+    login,
+    initUserInfo
   };
 });

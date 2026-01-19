@@ -12,6 +12,7 @@ import { getRouteName, getRoutePath } from '@/router/elegant/transform';
 import { useAuthStore } from '../auth';
 import { useTabStore } from '../tab';
 import {
+  filterAuthRoutesByPermissions,
   filterAuthRoutesByRoles,
   getBreadcrumbsByRoute,
   getCacheRouteNames,
@@ -176,10 +177,23 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
 
   /** Init auth route */
   async function initAuthRoute() {
-    // check if user info is initialized
-    // if (!authStore.userInfo.userId) {
-    //   await authStore.initUserInfo();
-    // }
+    // 确保用户信息已初始化（用于页面刷新时恢复用户状态）
+    // 检查 userId 和 buttons 都已加载，因为登录时可能先设置了 userId，但权限还在加载中
+    console.log('initAuthRoute - userId before init:', authStore.userInfo.userId);
+    console.log('initAuthRoute - buttons before init:', authStore.userInfo.buttons);
+
+    // 如果没有 userId，或者有 userId 但 buttons 为空且有角色（说明权限还没获取）
+    const needInitUserInfo =
+      !authStore.userInfo.userId ||
+      (authStore.userInfo.roles.length > 0 && authStore.userInfo.buttons.length === 0);
+
+    if (needInitUserInfo) {
+      await authStore.initUserInfo();
+    }
+
+    console.log('initAuthRoute - userId after init:', authStore.userInfo.userId);
+    console.log('initAuthRoute - roles:', authStore.userInfo.roles);
+    console.log('initAuthRoute - buttons:', authStore.userInfo.buttons);
 
     if (authRouteMode.value === 'static') {
       initStaticAuthRoute();
@@ -194,10 +208,18 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
   function initStaticAuthRoute() {
     const { authRoutes: staticAuthRoutes } = createStaticRoutes();
 
+    console.log('initStaticAuthRoute - isStaticSuper:', authStore.isStaticSuper);
+    console.log('initStaticAuthRoute - staticAuthRoutes:', staticAuthRoutes);
+
     if (authStore.isStaticSuper) {
       addAuthRoutes(staticAuthRoutes);
     } else {
-      const filteredAuthRoutes = filterAuthRoutesByRoles(staticAuthRoutes, authStore.userInfo.roles);
+      // 先按角色过滤
+      let filteredAuthRoutes = filterAuthRoutesByRoles(staticAuthRoutes, authStore.userInfo.roles);
+      console.log('initStaticAuthRoute - after role filter:', filteredAuthRoutes);
+      // 再按权限过滤
+      filteredAuthRoutes = filterAuthRoutesByPermissions(filteredAuthRoutes, authStore.userInfo.buttons);
+      console.log('initStaticAuthRoute - after permission filter:', filteredAuthRoutes);
 
       addAuthRoutes(filteredAuthRoutes);
     }

@@ -14,6 +14,47 @@ export function filterAuthRoutesByRoles(routes: ElegantConstRoute[], roles: stri
 }
 
 /**
+ * Filter auth routes by permissions
+ *
+ * @param routes Auth routes
+ * @param permissions User permissions
+ */
+export function filterAuthRoutesByPermissions(routes: ElegantConstRoute[], permissions: string[]) {
+  return routes.flatMap(route => filterAuthRouteByPermissions(route, permissions));
+}
+
+/**
+ * Filter auth route by permissions
+ *
+ * @param route Auth route
+ * @param permissions User permissions
+ */
+function filterAuthRouteByPermissions(route: ElegantConstRoute, permissions: string[]): ElegantConstRoute[] {
+  const routePermissions = (route.meta?.permissions as string[]) || [];
+
+  // if the route's "permissions" is empty, then it is allowed to access
+  const isEmptyPermissions = !routePermissions.length;
+
+  // if any user permission starts with a required route permission prefix, then it is allowed to access
+  const hasPermission = routePermissions.some(requiredPerm =>
+    permissions.some(userPerm => userPerm.startsWith(requiredPerm))
+  );
+
+  const filterRoute = { ...route };
+
+  if (filterRoute.children?.length) {
+    filterRoute.children = filterRoute.children.flatMap(item => filterAuthRouteByPermissions(item, permissions));
+  }
+
+  // Exclude the route if it has no children after filtering (only for parent routes that originally had children)
+  if (filterRoute.children?.length === 0 && route.children?.length) {
+    return [];
+  }
+
+  return hasPermission || isEmptyPermissions ? [filterRoute] : [];
+}
+
+/**
  * Filter auth route by roles
  *
  * @param route Auth route

@@ -68,5 +68,13 @@ declare module 'vue-router' {
     fixedIndexInTab?: number | null;
     /** if set query parameters, it will be automatically carried when entering the route */
     query?: { key: string; value: string }[] | null;
+    /**
+     * Permissions of the route
+     *
+     * Route can be accessed if the current user has at least one of the permissions
+     *
+     * It only works when the route mode is "static", if the route mode is "dynamic", it will be ignored
+     */
+    permissions?: string[];
   }
 }
