@@ -216,13 +216,9 @@ declare namespace Api {
       sortOrder: number;
       /** is hidden (true = 隐藏, false = 可见) */
       isHidden: boolean;
-  /** permission name (permission code) */
+      /** permission name (permission code) */
       permissionName: string;
-      /** children menu */
-      children?: Menu[];
-    };
-
-    /** menu list */type: 0-目录, 1-菜单, 2-按钮 */
+      /** menu type: 0-目录, 1-菜单, 2-按钮 */
       menuType: MenuType;
       /** is external link */
       isExternal: boolean;

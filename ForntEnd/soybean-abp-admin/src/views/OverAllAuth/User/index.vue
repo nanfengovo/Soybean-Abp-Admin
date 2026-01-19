@@ -242,7 +242,22 @@ function edit(id: string) {
           @add="handleAdd"
           @delete="handleBatchDelete"
           @refresh="getData"
-        />
+        >
+          <template #prefix>
+            <NButton type="success" size="small">
+              <template #icon>
+                <icon-ic-round-sync class="text-icon" />
+              </template>
+              导入
+            </NButton>
+            <NButton type="success" size="small">
+              <template #icon>
+                <icon-ic-round-sync class="text-icon" />
+              </template>
+              导出
+            </NButton>
+          </template>
+        </TableHeaderOperation>
       </template>
       <NDataTable
         v-model:checked-row-keys="checkedRowKeys"

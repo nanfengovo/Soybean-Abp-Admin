@@ -93,9 +93,7 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.overallauth_permission',
         meta: {
           title: 'overallauth_permission',
-          i18nKey: 'route.overallauth_permission',
-          order: 5,
-          icon: 'material-symbols:route'
+          i18nKey: 'route.overallauth_permission'
         }
       },
       {

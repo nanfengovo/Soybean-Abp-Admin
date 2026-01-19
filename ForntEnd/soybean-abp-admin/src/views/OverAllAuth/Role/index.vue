@@ -219,17 +219,17 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
         return <NTag type={tagMap[String(row.isStatic)]}>{label}</NTag>;
       }
     },
-    {
-      key: 'creationTime',
-      title: '创建时间',
-      align: 'center',
-      width: 180,
-      render: row => {
-        if (!row.creationTime) return '-';
-        const date = new Date(row.creationTime);
-        return date.toLocaleString('zh-CN');
-      }
-    },
+    // {
+    //   key: 'creationTime',
+    //   title: '创建时间',
+    //   align: 'center',
+    //   width: 180,
+    //   render: row => {
+    //     if (!row.creationTime) return '-';
+    //     const date = new Date(row.creationTime);
+    //     return date.toLocaleString('zh-CN');
+    //   }
+    // },
     {
       key: 'operate',
       title: $t('common.operate'),
