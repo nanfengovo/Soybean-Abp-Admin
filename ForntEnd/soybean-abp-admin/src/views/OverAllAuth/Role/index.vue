@@ -6,12 +6,21 @@ import type { PaginationData } from '@sa/hooks';
 import { fetchDeleteRole, fetchGetPermissions, fetchGetRoleList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { useNaivePaginatedTable, useTableOperate } from '@/hooks/common/table';
+import { useAuth } from '@/hooks/business/auth';
 import { $t } from '@/locales';
 import TableHeaderOperation from '@/components/advanced/table-header-operation.vue';
 import RoleSearch from './modules/role-search.vue';
 import RoleOperateDrawer from './modules/role-operate-drawer.vue';
 
 const appStore = useAppStore();
+const { hasAuth } = useAuth();
+
+// 权限码定义
+const permissions = {
+  add: 'AbpIdentity.Roles.Create',
+  edit: 'AbpIdentity.Roles.Update',
+  delete: 'AbpIdentity.Roles.Delete'
+};
 
 const searchParams: Api.SystemManage.RoleSearchParams = reactive({
   Filter: '',
@@ -237,14 +246,14 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
       width: 130,
       render: row => (
         <NSpace justify="center">
-          <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
+          <NButton type="primary" ghost size="small" disabled={!hasAuth(permissions.edit)} onClick={() => edit(row.id)}>
             {$t('common.edit')}
           </NButton>
           <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
             {{
               default: () => $t('common.confirmDelete'),
               trigger: () => (
-                <NButton type="error" ghost size="small" disabled={row.isStatic}>
+                <NButton type="error" ghost size="small" disabled={row.isStatic || !hasAuth(permissions.delete)}>
                   {$t('common.delete')}
                 </NButton>
               )
@@ -306,7 +315,8 @@ function edit(id: string) {
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"
-          :disabled-delete="checkedRowKeys.length === 0"
+          :disabled-add="!hasAuth(permissions.add)"
+          :disabled-delete="checkedRowKeys.length === 0 || !hasAuth(permissions.delete)"
           :loading="loading"
           @add="handleAdd"
           @delete="handleBatchDelete"

@@ -62,7 +62,38 @@ export const request: FlatRequestInstance<any, any, RequestInstanceState> = crea
         return null;
       }
 
-      const responseCode = String(response.data.code);
+      // ABP 错误处理：对于 4xx 错误（如 403），显示后端返回的详细错误信息
+      if (response.status >= 400 && response.status < 500) {
+        const responseData = response.data as any;
+        let errorMessage = '';
+
+        if (responseData?.error) {
+          // ABP 标准错误格式: { error: { message: '...', details: '...' } }
+          errorMessage = responseData.error.details || responseData.error.message || '';
+        } else if (responseData?.message) {
+          errorMessage = responseData.message;
+        }
+
+        // 如果没有错误信息，根据状态码提供默认信息
+        if (!errorMessage) {
+          const statusMessages: Record<number, string> = {
+            400: '请求参数错误',
+            401: '未授权，请重新登录',
+            403: '没有权限访问该资源',
+            404: '请求的资源不存在',
+            405: '请求方法不允许',
+            408: '请求超时',
+            422: '请求参数验证失败',
+            429: '请求过于频繁，请稍后再试'
+          };
+          errorMessage = statusMessages[response.status] || `请求失败 (${response.status})`;
+        }
+
+        showErrorMsg(request.state, errorMessage);
+        return null;
+      }
+
+      const responseCode = String(response.data?.code || '');
 
       function handleLogout() {
         authStore.resetStore();
@@ -72,7 +103,7 @@ export const request: FlatRequestInstance<any, any, RequestInstanceState> = crea
         handleLogout();
         window.removeEventListener('beforeunload', handleLogout);
 
-        request.state.errMsgStack = request.state.errMsgStack.filter(msg => msg !== response.data.msg);
+        request.state.errMsgStack = request.state.errMsgStack.filter(msg => msg !== response.data?.msg);
       }
 
       // when the backend response code is in `logoutCodes`, it means the user will be logged out and redirected to login page
@@ -84,15 +115,15 @@ export const request: FlatRequestInstance<any, any, RequestInstanceState> = crea
 
       // when the backend response code is in `modalLogoutCodes`, it means the user will be logged out by displaying a modal
       const modalLogoutCodes = import.meta.env.VITE_SERVICE_MODAL_LOGOUT_CODES?.split(',') || [];
-      if (modalLogoutCodes.includes(responseCode) && !request.state.errMsgStack?.includes(response.data.msg)) {
-        request.state.errMsgStack = [...(request.state.errMsgStack || []), response.data.msg];
+      if (modalLogoutCodes.includes(responseCode) && !request.state.errMsgStack?.includes(response.data?.msg)) {
+        request.state.errMsgStack = [...(request.state.errMsgStack || []), response.data?.msg];
 
         // prevent the user from refreshing the page
         window.addEventListener('beforeunload', handleLogout);
 
         window.$dialog?.error({
           title: $t('common.error'),
-          content: response.data.msg,
+          content: response.data?.msg,
           positiveText: $t('common.confirm'),
           maskClosable: false,
           closeOnEsc: false,
@@ -130,8 +161,17 @@ export const request: FlatRequestInstance<any, any, RequestInstanceState> = crea
 
       // get backend error message and code
       if (error.code === BACKEND_ERROR_CODE) {
-        message = error.response?.data?.msg || message;
-        backendErrorCode = String(error.response?.data?.code || '');
+        // ABP 错误响应格式: { error: { message: '...', details: '...', code: '...' } }
+        const responseData = error.response?.data as any;
+        if (responseData?.error) {
+          // ABP 标准错误格式
+          message = responseData.error.details || responseData.error.message || message;
+          backendErrorCode = String(responseData.error.code || '');
+        } else {
+          // 兼容其他格式
+          message = responseData?.message || responseData?.msg || message;
+          backendErrorCode = String(responseData?.code || '');
+        }
 
         // ABP 处理：当 HTTP 状态码为 401 时，不显示错误消息（会由拦截器自动刷新 token）
         if (error.response?.status === 401) {

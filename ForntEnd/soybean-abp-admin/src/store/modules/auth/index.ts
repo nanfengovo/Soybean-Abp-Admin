@@ -2,7 +2,7 @@ import { computed, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { defineStore } from 'pinia';
 import { useLoading } from '@sa/hooks';
-import { fetchGetRoleInfo, fetchGetUserInfo, fetchLogin } from '@/service/api';
+import { fetchGetPermissions, fetchGetRoleInfo, fetchGetUserInfo, fetchLogin } from '@/service/api';
 import { useRouterPush } from '@/hooks/common/router';
 import { localStg } from '@/utils/storage';
 import { SetupStoreId } from '@/enum';
@@ -149,10 +149,42 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
       userInfo.userId = adapterUserInfo.userId;
       userInfo.userName = adapterUserInfo.userName;
       userInfo.roles = role?.items ? role.items.map((r: any) => r.name) : [];
+
+      // 获取用户权限（通过角色获取）
+      await getUserPermissions(userInfo.roles);
+
       return true;
     }
 
     return false;
+  }
+
+  /** 获取用户已授权的权限列表（通过角色获取） */
+  async function getUserPermissions(roles: string[]) {
+    try {
+      const allPermissions = new Set<string>();
+
+      // 遍历用户所有角色，获取每个角色的权限
+      const promises = roles.map(async roleName => {
+        const { data, error } = await fetchGetPermissions('R', roleName);
+        if (!error && data) {
+          data.groups.forEach(group => {
+            group.permissions.forEach(p => {
+              if (p.isGranted) {
+                allPermissions.add(p.name);
+              }
+            });
+          });
+        }
+      });
+
+      await Promise.allSettled(promises);
+      userInfo.buttons = Array.from(allPermissions);
+      // 调试：打印获取到的权限列表
+      console.log('用户权限列表:', userInfo.buttons);
+    } catch {
+      userInfo.buttons = [];
+    }
   }
 
   // async function initUserInfo() {

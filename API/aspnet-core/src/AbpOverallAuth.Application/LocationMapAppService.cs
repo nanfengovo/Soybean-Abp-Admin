@@ -14,7 +14,6 @@ using Volo.Abp.Domain.Repositories;
 
 namespace AbpOverallAuth
 {
-    [Authorize]
     public class LocationMapAppService : CrudAppService<LocationMap, LocationMapDto, int, PagedAndSortedResultRequestDto, CreateLocationMapDto, UpdateLocationMapDto>
     {
         public LocationMapAppService(IRepository<LocationMap, int> repository) : base(repository)
