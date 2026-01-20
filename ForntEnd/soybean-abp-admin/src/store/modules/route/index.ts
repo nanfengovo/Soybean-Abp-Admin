@@ -209,10 +209,10 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
 
   /** Init dynamic auth route */
   async function initDynamicAuthRoute() {
-    const { data, error } = await fetchGetUserRoutes();
+    const result = await fetchGetUserRoutes();
 
-    if (!error) {
-      const { routes, home } = data;
+    if (!result.error && result.data) {
+      const { routes, home } = result.data;
 
       addAuthRoutes(routes);
 
@@ -273,17 +273,22 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
    * @param redirectKey Redirect route key
    */
   function handleUpdateRootRouteRedirect(redirectKey: LastLevelRouteKey) {
-    const redirect = getRoutePath(redirectKey);
+    // Try to get path from static routeMap first
+    let redirect = getRoutePath(redirectKey);
 
-    if (redirect) {
-      const rootRoute: CustomRoute = { ...ROOT_ROUTE, redirect };
-
-      router.removeRoute(rootRoute.name);
-
-      const [rootVueRoute] = getAuthVueRoutes([rootRoute]);
-
-      router.addRoute(rootVueRoute);
+    // If not found in static routeMap (dynamic route), construct path from route name
+    if (!redirect) {
+      const pathSegments = redirectKey.split('_');
+      redirect = '/' + pathSegments.join('/');
     }
+
+    const rootRoute: CustomRoute = { ...ROOT_ROUTE, redirect };
+
+    router.removeRoute(rootRoute.name);
+
+    const [rootVueRoute] = getAuthVueRoutes([rootRoute]);
+
+    router.addRoute(rootVueRoute);
   }
 
   /**
