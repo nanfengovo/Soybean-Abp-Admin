@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, reactive, watch } from 'vue';
-import { fetchAddRole, fetchUpdateRole } from '@/service/api';
+import { computed, reactive, ref, watch } from 'vue';
+import { fetchAddRole, fetchGetPermissions, fetchUpdateRole } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
 
@@ -57,9 +57,65 @@ const rules = computed<Record<RuleKey, App.Global.FormRule>>(() => {
   };
 });
 
+// 权限相关
+const loadingPermissions = ref(false);
+const permissionGroups = ref<Api.SystemManage.PermissionGroup[]>([]);
+const checkedPermissions = ref<string[]>([]);
+
+const permissionTreeData = computed<TreeOption[]>(() => {
+  return permissionGroups.value.map(group => ({
+    key: group.name,
+    label: group.displayName,
+    children: group.permissions.map(p => ({
+      key: p.name,
+      label: p.displayName
+    }))
+  }));
+});
+
+// 获取角色权限
+async function fetchRolePermissions(roleName: string) {
+  loadingPermissions.value = true;
+  try {
+    const { data, error } = await fetchGetPermissions('R', roleName);
+    if (!error && data) {
+      permissionGroups.value = data.groups;
+      // 提取已授权的权限
+      const granted: string[] = [];
+      data.groups.forEach(group => {
+        group.permissions.forEach(p => {
+          if (p.isGranted) {
+            granted.push(p.name);
+          }
+        });
+      });
+      checkedPermissions.value = granted;
+    }
+  } finally {
+    loadingPermissions.value = false;
+  }
+}
+
+// 获取所有可用权限（用于新增角色）
+async function fetchAllPermissions() {
+  loadingPermissions.value = true;
+  try {
+    // 使用空的 providerKey 获取所有权限定义
+    const { data, error } = await fetchGetPermissions('R', '');
+    if (!error && data) {
+      permissionGroups.value = data.groups;
+      checkedPermissions.value = [];
+    }
+  } finally {
+    loadingPermissions.value = false;
+  }
+}
+
 function handleUpdateModelWhenEdit() {
   if (props.operateType === 'add') {
     Object.assign(model, createDefaultModel());
+    checkedPermissions.value = [];
+    fetchAllPermissions();
     return;
   }
 
@@ -69,6 +125,7 @@ function handleUpdateModelWhenEdit() {
       isDefault: props.rowData.isDefault,
       isPublic: props.rowData.isPublic
     });
+    fetchRolePermissions(props.rowData.name);
   }
 }
 
@@ -118,7 +175,7 @@ watch(visible, () => {
 </script>
 
 <template>
-  <NDrawer v-model:show="visible" display-directive="show" :width="360">
+  <NDrawer v-model:show="visible" display-directive="show" :width="500">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <NForm ref="formRef" :model="model" :rules="rules" label-placement="left" :label-width="100">
         <NFormItem label="角色名称" path="name">
@@ -137,6 +194,21 @@ watch(visible, () => {
             <template #unchecked>否</template>
           </NSwitch>
           <span class="ml-8px text-12px text-#999">所有用户都可以查看此角色</span>
+        </NFormItem>
+        <NFormItem label="权限分配">
+          <NSpin :show="loadingPermissions" class="w-full">
+            <NTree
+              v-model:checked-keys="checkedPermissions"
+              :data="permissionTreeData"
+              checkable
+              cascade
+              selectable
+              block-line
+              expand-on-click
+              default-expand-all
+              class="max-h-400px w-full overflow-auto border-1 border-gray-200 rounded-4px border-solid p-8px"
+            />
+          </NSpin>
         </NFormItem>
       </NForm>
       <template #footer>
