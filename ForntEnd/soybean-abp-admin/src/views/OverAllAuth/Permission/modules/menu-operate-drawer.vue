@@ -251,20 +251,20 @@ watch(visible, () => {
         </NFormItem>
         <NFormItem label="是否隐藏" path="isHidden">
           <NSwitch v-model:value="model.isHidden">
-            <template #checked> 隐藏 </template>
-            <template #unchecked> 显示 </template>
+            <template #checked>隐藏</template>
+            <template #unchecked>显示</template>
           </NSwitch>
         </NFormItem>
         <NFormItem label="是否启用" path="isEnabled">
           <NSwitch v-model:value="model.isEnabled">
-            <template #checked> 启用 </template>
-            <template #unchecked> 禁用 </template>
+            <template #checked>启用</template>
+            <template #unchecked>禁用</template>
           </NSwitch>
         </NFormItem>
         <NFormItem label="外部链接" path="isExternal">
           <NSwitch v-model:value="model.isExternal">
-            <template #checked> 是 </template>
-            <template #unchecked> 否 </template>
+            <template #checked>是</template>
+            <template #unchecked>否</template>
           </NSwitch>
         </NFormItem>
         <NFormItem v-if="model.isExternal" label="外部URL" path="externalUrl">

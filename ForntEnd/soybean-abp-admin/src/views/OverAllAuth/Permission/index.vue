@@ -1,12 +1,12 @@
 <script setup lang="tsx">
 import { reactive, ref } from 'vue';
 import { NButton, NCard, NDataTable, NPopconfirm, NSpace, NTag } from 'naive-ui';
+import { useBoolean } from '@sa/hooks';
 import { fetchDeleteMenu, fetchGetMenuList, fetchSyncPermissions } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
-import { useBoolean } from '@sa/hooks';
-import { $t } from '@/locales';
 import { useSvgIcon } from '@/hooks/common/icon';
 import { useNaiveTable } from '@/hooks/common/table';
+import { $t } from '@/locales';
 import TableHeaderOperation from '@/components/advanced/table-header-operation.vue';
 import MenuSearch from './modules/menu-search.vue';
 import MenuOperateDrawer from './modules/menu-operate-drawer.vue';
@@ -22,6 +22,13 @@ const searchParams: Api.SystemManage.MenuSearchParams = reactive({
 
 // 选中的行
 const checkedRowKeys = ref<string[]>([]);
+
+// 菜单类型标签映射
+const menuTypeMap: Record<Api.SystemManage.MenuType, { label: string; type: NaiveUI.ThemeColor }> = {
+  0: { label: '目录', type: 'default' },
+  1: { label: '菜单', type: 'info' },
+  2: { label: '按钮', type: 'warning' }
+};
 
 // 构建树形结构
 function buildTree(items: Api.SystemManage.Menu[]): Api.SystemManage.Menu[] {
@@ -51,7 +58,7 @@ function buildTree(items: Api.SystemManage.Menu[]): Api.SystemManage.Menu[] {
 }
 
 // 使用 useNaiveTable hook 来支持列设置功能
-const { columns, columnChecks, data, getData, loading, reloadColumns } = useNaiveTable({
+const { columns, columnChecks, data, getData, loading } = useNaiveTable({
   api: () => fetchGetMenuList(searchParams),
   transform: response => {
     if (!response.error && response.data) {
@@ -150,17 +157,17 @@ const { columns, columnChecks, data, getData, loading, reloadColumns } = useNaiv
       fixed: 'right' as const,
       render: (row: Api.SystemManage.Menu) => (
         <NSpace justify="center" size={8}>
-          <NButton type="primary" ghost size="small" onClick={() => handleEdit(row.id)}>
+          <NButton type="primary" ghost size="tiny" onClick={() => handleEdit(row.id)}>
             {$t('common.edit')}
           </NButton>
-          <NButton type="info" ghost size="small" onClick={() => handleAddChild(row.id)}>
+          <NButton type="info" ghost size="tiny" onClick={() => handleAddChild(row.id)}>
             新增子项
           </NButton>
           <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
             {{
               default: () => $t('common.confirmDelete'),
               trigger: () => (
-                <NButton type="error" ghost size="small">
+                <NButton type="error" ghost size="tiny">
                   {$t('common.delete')}
                 </NButton>
               )
@@ -171,13 +178,6 @@ const { columns, columnChecks, data, getData, loading, reloadColumns } = useNaiv
     }
   ]
 });
-
-// 菜单类型标签映射
-const menuTypeMap: Record<Api.SystemManage.MenuType, { label: string; type: NaiveUI.ThemeColor }> = {
-  0: { label: '目录', type: 'default' },
-  1: { label: '菜单', type: 'info' },
-  2: { label: '按钮', type: 'warning' }
-};
 
 // 抽屉相关
 const { bool: drawerVisible, setTrue: openDrawer } = useBoolean();

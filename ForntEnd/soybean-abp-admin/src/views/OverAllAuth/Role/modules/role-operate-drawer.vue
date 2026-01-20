@@ -62,7 +62,8 @@ const loadingPermissions = ref(false);
 const permissionGroups = ref<Api.SystemManage.PermissionGroup[]>([]);
 const checkedPermissions = ref<string[]>([]);
 
-const permissionTreeData = computed<TreeOption[]>(() => {
+// 将权限组转换为树形结构
+const permissionTreeData = computed(() => {
   return permissionGroups.value.map(group => ({
     key: group.name,
     label: group.displayName,
