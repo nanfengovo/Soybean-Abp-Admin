@@ -179,3 +179,17 @@ export function fetchGetPermissions(providerName: string, providerKey: string) {
     params: { providerName, providerKey }
   });
 }
+
+/** update permissions */
+export function fetchUpdatePermissions(
+  providerName: string,
+  providerKey: string,
+  data: { permissions: Array<{ name: string; isGranted: boolean }> }
+) {
+  return request({
+    url: 'api/permission-management/permissions',
+    method: 'put',
+    params: { providerName, providerKey },
+    data
+  });
+}

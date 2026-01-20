@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue';
-import { fetchAddRole, fetchGetPermissions, fetchUpdateRole } from '@/service/api';
+import { fetchAddRole, fetchGetPermissions, fetchUpdatePermissions, fetchUpdateRole } from '@/service/api';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
 
@@ -74,6 +74,9 @@ const permissionTreeData = computed(() => {
   }));
 });
 
+// 保存原始权限用于比较
+const originalPermissions = ref<string[]>([]);
+
 // 获取角色权限
 async function fetchRolePermissions(roleName: string) {
   loadingPermissions.value = true;
@@ -91,6 +94,7 @@ async function fetchRolePermissions(roleName: string) {
         });
       });
       checkedPermissions.value = granted;
+      originalPermissions.value = [...granted];
     }
   } finally {
     loadingPermissions.value = false;
@@ -150,21 +154,48 @@ async function handleSubmit() {
   }
 
   let error: any = null;
+  let roleName = model.name;
 
   // 调用对应的 API
   if (props.operateType === 'add') {
     const result = await fetchAddRole(submitData);
     error = result.error;
+    if (!error && result.data) {
+      roleName = result.data.name;
+    }
   } else if (props.operateType === 'edit' && props.rowData) {
     const result = await fetchUpdateRole(props.rowData.id, submitData);
     error = result.error;
   }
 
-  if (!error) {
-    window.$message?.success($t('common.updateSuccess'));
-    closeDrawer();
-    emit('submitted');
+  if (error) {
+    return;
   }
+
+  // 保存权限 - 构建所有权限的更新数据
+  const allPermissions: Array<{ name: string; isGranted: boolean }> = [];
+  permissionGroups.value.forEach(group => {
+    group.permissions.forEach(p => {
+      allPermissions.push({
+        name: p.name,
+        isGranted: checkedPermissions.value.includes(p.name)
+      });
+    });
+  });
+
+  // 调用更新权限接口
+  const permResult = await fetchUpdatePermissions('R', roleName, {
+    permissions: allPermissions
+  });
+
+  if (permResult.error) {
+    window.$message?.error('权限保存失败');
+    return;
+  }
+
+  window.$message?.success($t('common.updateSuccess'));
+  closeDrawer();
+  emit('submitted');
 }
 
 watch(visible, () => {

@@ -40,6 +40,26 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
+    name: 'data',
+    path: '/data',
+    component: 'layout.base',
+    meta: {
+      title: 'data',
+      i18nKey: 'route.data'
+    },
+    children: [
+      {
+        name: 'data_map',
+        path: '/data/map',
+        component: 'view.data_map',
+        meta: {
+          title: 'data_map',
+          i18nKey: 'route.data_map'
+        }
+      }
+    ]
+  },
+  {
     name: 'home',
     path: '/home',
     component: 'layout.base$view.home',
