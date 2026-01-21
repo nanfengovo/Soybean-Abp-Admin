@@ -25,6 +25,9 @@ declare module "@elegant-router/types" {
     "home": "/home";
     "iframe-page": "/iframe-page/:url";
     "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?";
+    "logmanage": "/logmanage";
+    "logmanage_externalapilog": "/logmanage/externalapilog";
+    "logmanage_lnternalapilog": "/logmanage/lnternalapilog";
     "overallauth": "/overallauth";
     "overallauth_role": "/overallauth/role";
     "overallauth_user": "/overallauth/user";
@@ -68,6 +71,7 @@ declare module "@elegant-router/types" {
     | "home"
     | "iframe-page"
     | "login"
+    | "logmanage"
     | "overallauth"
     | "system"
   >;
@@ -87,6 +91,8 @@ declare module "@elegant-router/types" {
   export type LastLevelRouteKey = Extract<
     RouteKey,
     | "datamanage_loactionmap"
+    | "logmanage_externalapilog"
+    | "logmanage_lnternalapilog"
     | "overallauth_role"
     | "overallauth_user"
     | "system_dashboard"

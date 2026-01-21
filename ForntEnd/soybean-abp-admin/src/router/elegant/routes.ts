@@ -46,8 +46,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: 'datamanage',
       i18nKey: 'route.datamanage',
-      order: 2,
-      icon: 'mdi:database-settings'
+      order: 3,
+      icon: 'mdi:database-settings-outline'
     },
     children: [
       {
@@ -57,9 +57,8 @@ export const generatedRoutes: GeneratedRoute[] = [
         meta: {
           title: 'datamanage_loactionmap',
           i18nKey: 'route.datamanage_loactionmap',
-          order: 1,
-          icon: 'mdi:map-marker-path',
-          permissions: ['AbpOverallAuth.LocationMap']
+          order: 3,
+          icon: 'mdi:map-outline'
         }
       }
     ]
@@ -100,6 +99,35 @@ export const generatedRoutes: GeneratedRoute[] = [
       constant: true,
       hideInMenu: true
     }
+  },
+  {
+    name: 'logmanage',
+    path: '/logmanage',
+    component: 'layout.base',
+    meta: {
+      title: 'logmanage',
+      i18nKey: 'route.logmanage'
+    },
+    children: [
+      {
+        name: 'logmanage_externalapilog',
+        path: '/logmanage/externalapilog',
+        component: 'view.logmanage_externalapilog',
+        meta: {
+          title: 'logmanage_externalapilog',
+          i18nKey: 'route.logmanage_externalapilog'
+        }
+      },
+      {
+        name: 'logmanage_lnternalapilog',
+        path: '/logmanage/lnternalapilog',
+        component: 'view.logmanage_lnternalapilog',
+        meta: {
+          title: 'logmanage_lnternalapilog',
+          i18nKey: 'route.logmanage_lnternalapilog'
+        }
+      }
+    ]
   },
   {
     name: 'overallauth',
@@ -145,7 +173,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: 'system',
       i18nKey: 'route.system',
-      icon: 'mdi:cog-outline'
+      icon: 'mdi:cog-outline',
+      order: 1
     },
     children: [
       {

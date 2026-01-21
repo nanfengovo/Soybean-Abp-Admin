@@ -16,6 +16,8 @@ export const layouts: Record<RouteLayout, RouteComponent | (() => Promise<RouteC
 
 export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<RouteComponent>)> = {
   datamanage_loactionmap: () => import("@/views/DataManage/LoactionMap/index.vue"),
+  logmanage_externalapilog: () => import("@/views/LogManage/ExternalAPILog/index.vue"),
+  logmanage_lnternalapilog: () => import("@/views/LogManage/LnternalAPILog/index.vue"),
   overallauth_role: () => import("@/views/OverAllAuth/Role/index.vue"),
   overallauth_user: () => import("@/views/OverAllAuth/User/index.vue"),
   system_dashboard: () => import("@/views/System/Dashboard/index.vue"),
