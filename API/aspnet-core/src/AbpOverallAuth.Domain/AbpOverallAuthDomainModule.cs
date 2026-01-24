@@ -1,6 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AbpOverallAuth.MultiTenancy;
+using AbpOverallAuth.XinSong.TM;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using AbpOverallAuth.MultiTenancy;
+using Microsoft.Extensions.Options;
+using System;
+using System.Net.Http;
 using Volo.Abp.AuditLogging;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.Emailing;
@@ -28,7 +33,8 @@ namespace AbpOverallAuth;
     typeof(AbpPermissionManagementDomainIdentityModule),
     typeof(AbpSettingManagementDomainModule),
     typeof(AbpTenantManagementDomainModule),
-    typeof(AbpEmailingModule)
+    typeof(AbpEmailingModule),
+    typeof(HttpClient)
 )]
 public class AbpOverallAuthDomainModule : AbpModule
 {
@@ -59,6 +65,23 @@ public class AbpOverallAuthDomainModule : AbpModule
         Configure<AbpMultiTenancyOptions>(options =>
         {
             options.IsEnabled = MultiTenancyConsts.IsEnabled;
+        });
+        var configuration = context.Services.GetConfiguration();
+        // 直接绑定到 TM 这一层
+        Configure<TMOptions>(configuration.GetSection("ThirdParty:TM"));
+        // 注册 HttpClient 并使用 Options 中的值
+        context.Services.AddHttpClient("TMClient", (sp, client) =>
+        {
+            // 从 DI 容器中获取绑定的配置值
+            var options = sp.GetRequiredService<IOptions<TMOptions>>().Value;
+
+            var activeUrl = options.GetActiveUrl();
+            if (!string.IsNullOrEmpty(activeUrl))
+            {
+                client.BaseAddress = new Uri(activeUrl);
+            }
+
+            client.Timeout = TimeSpan.FromSeconds(10);
         });
 
 #if DEBUG

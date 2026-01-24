@@ -231,7 +231,10 @@ const local: App.I18n.Schema = {
     overallauth_role: '角色管理',
     overallauth_user: '用户管理',
     datamanage: '数据管理',
-    datamanage_loactionmap: '机台点位映射'
+    datamanage_loactionmap: '机台点位映射',
+    logmanage: '日志管理',
+    logmanage_externalapilog: '外部接口日志',
+    logmanage_lnternalapilog: '内部接口日志'
   },
   page: {
     login: {

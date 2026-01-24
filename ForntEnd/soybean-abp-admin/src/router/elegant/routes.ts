@@ -106,7 +106,9 @@ export const generatedRoutes: GeneratedRoute[] = [
     component: 'layout.base',
     meta: {
       title: 'logmanage',
-      i18nKey: 'route.logmanage'
+      i18nKey: 'route.logmanage',
+      order: 4,
+      icon: 'mdi:clipboard-text-multiple-outline'
     },
     children: [
       {
@@ -115,7 +117,9 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.logmanage_externalapilog',
         meta: {
           title: 'logmanage_externalapilog',
-          i18nKey: 'route.logmanage_externalapilog'
+          i18nKey: 'route.logmanage_externalapilog',
+          order: 4,
+          icon: 'mdi:api'
         }
       },
       {
@@ -124,7 +128,9 @@ export const generatedRoutes: GeneratedRoute[] = [
         component: 'view.logmanage_lnternalapilog',
         meta: {
           title: 'logmanage_lnternalapilog',
-          i18nKey: 'route.logmanage_lnternalapilog'
+          i18nKey: 'route.logmanage_lnternalapilog',
+          order: 4,
+          icon: 'mdi:api'
         }
       }
     ]
@@ -136,7 +142,7 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: 'overallauth',
       i18nKey: 'route.overallauth',
-      order: 2,
+      order: 99,
       icon: 'carbon:cloud-service-management'
     },
     children: [

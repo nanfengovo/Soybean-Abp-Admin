@@ -1,6 +1,8 @@
 ﻿
 using AbpOverallAuth.DataManage;
 using AbpOverallAuth.Dtos.DataManage;
+using AbpOverallAuth.Dtos.TM;
+using AbpOverallAuth.XinSong.TM;
 using AutoMapper;
 
 namespace AbpOverallAuth;
@@ -16,5 +18,6 @@ public class AbpOverallAuthApplicationAutoMapperProfile : Profile
         CreateMap<LocationMap, LocationMapDto>();
         CreateMap<CreateLocationMapDto, LocationMap>();
         CreateMap<UpdateLocationMapDto, LocationMap>();
+        CreateMap<CreateTaskDto, TaskCreationArgs>();
     }
 }

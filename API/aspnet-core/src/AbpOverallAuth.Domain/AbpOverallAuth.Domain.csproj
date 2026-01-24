@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\..\common.props" />
 
@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="Volo.Abp.Emailing" Version="8.3.4" />
     <PackageReference Include="Volo.Abp.Identity.Domain" Version="8.3.4" />
     <PackageReference Include="Volo.Abp.PermissionManagement.Domain.Identity" Version="8.3.4" />
@@ -23,6 +24,10 @@
     <PackageReference Include="Volo.Abp.SettingManagement.Domain" Version="8.3.4" />
     <PackageReference Include="Volo.Abp.OpenIddict.Domain" Version="8.3.4" />
     <PackageReference Include="Volo.Abp.PermissionManagement.Domain.OpenIddict" Version="8.3.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TaskManage\ThirdPartyTask\" />
   </ItemGroup>
 
 </Project>

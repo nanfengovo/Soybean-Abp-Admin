@@ -235,7 +235,10 @@ const local: App.I18n.Schema = {
     overallauth_role: 'Role Management',
     overallauth_user: 'User Management',
     datamanage: 'Data Management',
-    datamanage_loactionmap: 'Location Map'
+    datamanage_loactionmap: 'Location Map',
+    logmanage: 'Log Management',
+    logmanage_externalapilog: 'External API Log',
+    logmanage_lnternalapilog: 'Internal API Log'
   },
   page: {
     login: {
