@@ -75,11 +75,7 @@ public class AbpOverallAuthHttpApiHostModule : AbpModule
         Configure<AbpAntiForgeryOptions>(options =>
         {
             options.TokenCookie.Expiration = TimeSpan.Zero;
-            options.AutoValidate = false; //��ʾ����֤��α����
-                                          //options.AutoValidateIgnoredHttpMethods.Remove("GET");
-                                          //options.AutoValidateFilter =
-                                          //    type => !type.Namespace.StartsWith("MyProject.MyIgnoredNamespace");
-
+            options.AutoValidate = false;
         });
     }
 
@@ -246,7 +242,6 @@ public class AbpOverallAuthHttpApiHostModule : AbpModule
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
-
     }
 
 }

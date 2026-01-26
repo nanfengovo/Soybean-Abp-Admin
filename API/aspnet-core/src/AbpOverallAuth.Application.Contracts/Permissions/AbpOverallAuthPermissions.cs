@@ -35,4 +35,15 @@ public static class AbpOverallAuthPermissions
 
         public const string Delete = Default + ".Delete";
     }
+
+    /// <summary>
+    /// 内部任务管理模块
+    /// </summary>
+    public static class InTask
+    {
+        public const string Default = GroupName + ".InTask";
+        public const string Create = Default + ".Create";
+        public const string Edit = Default + ".Edit";
+        public const string Delete = Default + ".Delete";
+    }
 }

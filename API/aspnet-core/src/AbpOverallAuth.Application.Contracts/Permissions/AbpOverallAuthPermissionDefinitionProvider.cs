@@ -21,6 +21,11 @@ public class AbpOverallAuthPermissionDefinitionProvider : PermissionDefinitionPr
         mapPermission.AddChild(AbpOverallAuthPermissions.LocationMap.Create, L("Permission:点位映射创建"));
         mapPermission.AddChild(AbpOverallAuthPermissions.LocationMap.Edit, L("Permission:点位映射编辑"));
         mapPermission.AddChild(AbpOverallAuthPermissions.LocationMap.Delete,L("Permission:点位映射删除"));
+
+        var InTask = myGroup.AddPermission(AbpOverallAuthPermissions.InTask.Default, L("Permission:内部任务管理"));
+        InTask.AddChild(AbpOverallAuthPermissions.InTask.Create, L("Permission:内部任务创建"));
+        InTask.AddChild(AbpOverallAuthPermissions.InTask.Edit, L("Permission:内部任务编辑"));
+        InTask.AddChild(AbpOverallAuthPermissions.InTask.Delete, L("Permission:内部任务删除"));
     }
 
     private static LocalizableString L(string name)

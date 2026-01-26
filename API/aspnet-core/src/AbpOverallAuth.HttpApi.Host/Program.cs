@@ -13,17 +13,34 @@ public class Program
     public async static Task<int> Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
-#if DEBUG
-            .MinimumLevel.Debug()
-#else
-            .MinimumLevel.Information()
-#endif
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-            .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
-            .Enrich.FromLogContext()
-            .WriteTo.Async(c => c.File("Logs/logs.txt"))
-            .WriteTo.Async(c => c.Console())
-            .CreateLogger();
+        // 基本日志级别配置
+        .MinimumLevel.Debug()
+        .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+        .MinimumLevel.Override("System", LogEventLevel.Information)
+        .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+        .MinimumLevel.Override("OpenIddict", LogEventLevel.Warning)
+        .MinimumLevel.Override("OpenIddict.Validation", LogEventLevel.Warning)
+        .MinimumLevel.Override("OpenIddict.Server", LogEventLevel.Warning)
+        .MinimumLevel.Override("OpenIddict.AspNetCore", LogEventLevel.Warning)
+        .Enrich.WithProperty("Application", "SiaSunRCS")
+
+        // 文件输出配置
+        .WriteTo.Async(c => c.File(
+            path: "RCSLogs/.txt",
+            rollingInterval: RollingInterval.Day,
+            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {SourceContext}{NewLine}{Message}{NewLine}{Exception}{NewLine}",
+            rollOnFileSizeLimit: true, // 同时按大小滚动
+            fileSizeLimitBytes: 10 * 1024 * 1024, // 10MB
+            retainedFileCountLimit: 7, // 保留30天日志
+            shared: true, // 允许多进程共享
+            flushToDiskInterval: TimeSpan.FromSeconds(1)
+        ))
+
+        // 控制台输出配置
+        .WriteTo.Async(c => c.Console(
+            outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+        ))
+        .CreateLogger();
 
         try
         {
