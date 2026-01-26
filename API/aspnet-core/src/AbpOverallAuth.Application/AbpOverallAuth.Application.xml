@@ -6,7 +6,7 @@
     <members>
         <member name="M:AbpOverallAuth.TM.TMApplicationService.CreateTask(AbpOverallAuth.Dtos.TM.CreateTaskDto)">
             <summary>
-            1.通过前端提供必要参数创建任务
+            通过前端提供必要参数创建任务
             </summary>
             <param name="input"></param>
             <returns></returns>

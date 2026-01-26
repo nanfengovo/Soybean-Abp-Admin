@@ -72,6 +72,8 @@ public class AbpOverallAuthHttpApiHostModule : AbpModule
         ConfigureVirtualFileSystem(context);
         ConfigureCors(context, configuration);
         ConfigureSwaggerServices(context, configuration);
+        // 注册自定义中间件
+        context.Services.AddTransient<RequestResponseLoggingMiddleware>();
         Configure<AbpAntiForgeryOptions>(options =>
         {
             options.TokenCookie.Expiration = TimeSpan.Zero;
@@ -219,6 +221,8 @@ public class AbpOverallAuthHttpApiHostModule : AbpModule
         }
 
         app.UseCorrelationId();
+        //使用自定义中间件
+        app.UseMiddleware<RequestResponseLoggingMiddleware>();
         app.UseStaticFiles();
         app.UseRouting();
         app.UseCors();

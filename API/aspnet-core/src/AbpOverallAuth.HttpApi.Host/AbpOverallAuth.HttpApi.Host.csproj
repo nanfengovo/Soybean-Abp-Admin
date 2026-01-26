@@ -41,10 +41,8 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\AbpOverallAuth.Application.Contracts\bin\Debug\net8.0\AbpOverallAuth.Application.Contracts.xml"
-			  CopyToOutputDirectory="Always" />
-		<None Include="..\AbpOverallAuth.Application\bin\Debug\Debug\net8.0\AbpOverallAuth.Application.xml"
-			  CopyToOutputDirectory="Always" />
+		<None Include="..\AbpOverallAuth.Application.Contracts\bin\Debug\net8.0\AbpOverallAuth.Application.Contracts.xml" CopyToOutputDirectory="Always" />
+		<None Include="..\AbpOverallAuth.Application\bin\Debug\Debug\net8.0\AbpOverallAuth.Application.xml" CopyToOutputDirectory="Always" />
 	</ItemGroup>
 
 </Project>
