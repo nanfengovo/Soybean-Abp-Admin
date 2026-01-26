@@ -10,7 +10,7 @@ using TaskStatus = AbpOverallAuth.Enums.InternalTask.TaskStatus;
 
 namespace AbpOverallAuth.Dtos.TM
 {
-    public class CreateTaskDto:Entity<string>
+    public class CreateTaskDto
     {
         public TaskType TaskType { get; set; } = TaskType.None;
 
@@ -20,15 +20,13 @@ namespace AbpOverallAuth.Dtos.TM
 
         public string ToAddress { get; set; }
 
-        public TaskStatus TaskStatus { get; set; } = TaskStatus.Init;
-
         public int FetchCount { get; set; }
 
         public int PutCount { get; set; }
 
-        public ContainerType FetchType { get; set; }
+        public ContainerType? FetchType { get; set; }
 
-        public ContainerType PutType { get; set; }
+        public ContainerType? PutType { get; set; }
 
         public MachineType FetchMachineType { get; set; }
 

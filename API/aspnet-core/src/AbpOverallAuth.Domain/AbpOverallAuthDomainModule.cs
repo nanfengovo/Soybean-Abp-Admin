@@ -33,8 +33,7 @@ namespace AbpOverallAuth;
     typeof(AbpPermissionManagementDomainIdentityModule),
     typeof(AbpSettingManagementDomainModule),
     typeof(AbpTenantManagementDomainModule),
-    typeof(AbpEmailingModule),
-    typeof(HttpClient)
+    typeof(AbpEmailingModule)
 )]
 public class AbpOverallAuthDomainModule : AbpModule
 {

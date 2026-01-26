@@ -37,7 +37,7 @@ namespace AbpOverallAuth.XinSong.TM
         public async Task<InternalTask> CreateTask(TaskCreationArgs task)
         {
             InternalTask internalTask = new InternalTask(
-                task.Id,
+                DateTime.Now.ToString("yyyyMMddHHmmssfffff"),
                 task.TaskType,
                 task.FromAddress,
                 task.MiddleAddress,

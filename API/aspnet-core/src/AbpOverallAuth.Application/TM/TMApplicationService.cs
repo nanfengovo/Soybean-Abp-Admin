@@ -19,7 +19,7 @@ namespace AbpOverallAuth.TM
 		private readonly ILogger<TMApplicationService> _logger;
 
         private readonly ITMManager _tmManager;
-        public TMApplicationService(IRepository<InternalTask, string> taskRepository, ILogger<TMApplicationService> logger, ITMManager tmManager)
+        public TMApplicationService(ILogger<TMApplicationService> logger, ITMManager tmManager)
         {
             _logger = logger;
             _tmManager = tmManager;

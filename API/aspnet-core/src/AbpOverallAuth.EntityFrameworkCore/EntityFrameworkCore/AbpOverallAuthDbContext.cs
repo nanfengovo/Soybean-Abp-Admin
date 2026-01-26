@@ -1,5 +1,6 @@
 ﻿using AbpOverallAuth.DataManage;
 using AbpOverallAuth.LogManage.APILogs;
+using AbpOverallAuth.TaskManage.InternalTask;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -55,6 +56,8 @@ public class AbpOverallAuthDbContext :
 
     public DbSet<ThirdPartyCallLog> ThirdPartyCallLogs { get; set; }
     public DbSet<LocationMap> LocationMaps { get; set; }
+
+    public DbSet<InternalTask> InternalTask { get; set; }
     #endregion
 
     public AbpOverallAuthDbContext(DbContextOptions<AbpOverallAuthDbContext> options)
@@ -95,6 +98,11 @@ public class AbpOverallAuthDbContext :
         builder.Entity<ThirdPartyCallLog>(b =>
         {
             b.ToTable("tb_ThirdPartyCallLog");
+        });
+
+        builder.Entity<InternalTask>(b =>
+        {
+            b.ToTable("tb_InternalTask");
         });
     }
 }
