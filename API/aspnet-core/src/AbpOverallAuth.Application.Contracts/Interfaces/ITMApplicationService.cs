@@ -10,6 +10,11 @@ namespace AbpOverallAuth.Interfaces
 {
     public interface ITMApplicationService:IApplicationService
     {
+        /// <summary>
+        /// 创建内部任务（通过前端下）
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public Task CreateTask(CreateTaskDto input);
     }
 }

@@ -172,9 +172,13 @@ public class AbpOverallAuthHttpApiHostModule : AbpModule
     }
     private static List<string> GetXmlCommentsPaths()
     {
-        var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        var files = Directory.GetFiles(basePath, "*.xml");
-        return files.ToList();
+        var basePath = AppContext.BaseDirectory;
+        return new List<string>
+        {
+            Path.Combine(basePath, "AbpOverallAuth.HttpApi.Host.xml"),
+            Path.Combine(basePath, "AbpOverallAuth.Application.Contracts.xml"),
+            Path.Combine(basePath, "AbpOverallAuth.Application.xml")
+        };
     }
 
     private void ConfigureCors(ServiceConfigurationContext context, IConfiguration configuration)

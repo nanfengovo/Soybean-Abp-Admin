@@ -4,5 +4,13 @@
         <name>AbpOverallAuth.Application</name>
     </assembly>
     <members>
+        <member name="M:AbpOverallAuth.TM.TMApplicationService.CreateTask(AbpOverallAuth.Dtos.TM.CreateTaskDto)">
+            <summary>
+            1.通过前端提供必要参数创建任务
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+            <exception cref="T:Volo.Abp.UserFriendlyException"></exception>
+        </member>
     </members>
 </doc>

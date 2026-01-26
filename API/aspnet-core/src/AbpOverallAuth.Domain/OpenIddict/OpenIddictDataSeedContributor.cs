@@ -78,12 +78,6 @@ public class OpenIddictDataSeedContributor : IDataSeedContributor, ITransientDep
         };
 
         var configurationSection = _configuration.GetSection("OpenIddict:Applications");
-
-
-
-
-
-
         // Swagger Client
         var swaggerClientId = configurationSection["AbpOverallAuth_Swagger:ClientId"];
         if (!swaggerClientId.IsNullOrWhiteSpace())

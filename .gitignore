@@ -1,0 +1,2 @@
+*.txt
+/API/aspnet-core/src/AbpOverallAuth.HttpApi.Host/RCSLogs

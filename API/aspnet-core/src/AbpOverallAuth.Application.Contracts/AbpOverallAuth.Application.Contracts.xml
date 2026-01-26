@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AbpOverallAuth.Application.Contracts</name>
+    </assembly>
+    <members>
+        <member name="T:AbpOverallAuth.Dtos.DataManage.CreateLocationMapDto">
+            <summary>
+            创建 DTO
+            </summary>
+        </member>
+        <member name="T:AbpOverallAuth.Dtos.DataManage.LocationMapDto">
+            <summary>
+            查询 / 返回 DTO
+            </summary>
+        </member>
+        <member name="T:AbpOverallAuth.Dtos.DataManage.UpdateLocationMapDto">
+            <summary>
+            更新 DTO
+            </summary>
+        </member>
+        <member name="M:AbpOverallAuth.Interfaces.ITMApplicationService.CreateTask(AbpOverallAuth.Dtos.TM.CreateTaskDto)">
+            <summary>
+            创建内部任务（通过前端下）
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AbpOverallAuth.Permissions.AbpOverallAuthPermissionDefinitionProvider">
+            <summary>
+            权限定义提供者 - 从动态存储加载权限
+            </summary>
+        </member>
+        <member name="T:AbpOverallAuth.Permissions.AbpOverallAuthPermissions.LocationMap">
+            <summary>
+            地图点位映射模块
+            </summary>
+        </member>
+        <member name="F:AbpOverallAuth.Permissions.AbpOverallAuthPermissions.LocationMap.Default">
+            <summary>
+            查看
+            </summary>
+        </member>
+        <member name="F:AbpOverallAuth.Permissions.AbpOverallAuthPermissions.LocationMap.Create">
+            <summary>
+            创建
+            </summary>
+        </member>
+        <member name="F:AbpOverallAuth.Permissions.AbpOverallAuthPermissions.LocationMap.Edit">
+            <summary>
+            编辑
+            </summary>
+        </member>
+        <member name="F:AbpOverallAuth.Permissions.AbpOverallAuthPermissions.LocationMap.Delete">
+            <summary>
+            删除
+            </summary>
+        </member>
+        <member name="T:AbpOverallAuth.Permissions.AbpOverallAuthPermissions.InTask">
+            <summary>
+            内部任务管理模块
+            </summary>
+        </member>
+    </members>
+</doc>

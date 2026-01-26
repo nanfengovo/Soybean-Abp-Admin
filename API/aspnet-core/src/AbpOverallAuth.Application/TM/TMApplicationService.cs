@@ -28,6 +28,12 @@ namespace AbpOverallAuth.TM
             _tmManager = tmManager;
         }
 
+        /// <summary>
+        /// 通过前端提供必要参数创建任务
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        /// <exception cref="UserFriendlyException"></exception>
         [Authorize(AbpOverallAuthPermissions.InTask.Create)]
         public async Task CreateTask(CreateTaskDto input)
         {
@@ -44,5 +50,7 @@ namespace AbpOverallAuth.TM
 				throw new UserFriendlyException($"{nameof(CreateTask)}方法发生异常,异常信息为：{ex.Message}");
 			}
         }
+
+
     }
 }
