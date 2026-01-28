@@ -17,7 +17,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace AbpOverallAuth.TM
 {
-    public class TMApplicationService : ApplicationService, ITMApplicationService
+    public class TMApplicationService : AbpOverallAuthAppService, ITMApplicationService
     {
 		private readonly ILogger<TMApplicationService> _logger;
 
@@ -51,6 +51,23 @@ namespace AbpOverallAuth.TM
 			}
         }
 
+        /// <summary>
+        /// 派发一个/多个任务
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<bool> PressTaskAsync(string[] ids)
+        {
+            try
+            {
+                
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
+        }
     }
 }

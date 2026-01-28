@@ -12,5 +12,13 @@
             <returns></returns>
             <exception cref="T:Volo.Abp.UserFriendlyException"></exception>
         </member>
+        <member name="M:AbpOverallAuth.TM.TMApplicationService.PressTaskAsync(System.String[])">
+            <summary>
+            派发一个/多个任务
+            </summary>
+            <param name="ids"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
     </members>
 </doc>

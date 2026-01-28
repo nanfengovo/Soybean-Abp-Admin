@@ -26,6 +26,13 @@
             <param name="input"></param>
             <returns></returns>
         </member>
+        <member name="M:AbpOverallAuth.Interfaces.ITMApplicationService.PressTaskAsync(System.String[])">
+            <summary>
+            派发一个/多个任务
+            </summary>
+            <param name="ids"></param>
+            <returns></returns>
+        </member>
         <member name="T:AbpOverallAuth.Permissions.AbpOverallAuthPermissionDefinitionProvider">
             <summary>
             权限定义提供者 - 从动态存储加载权限

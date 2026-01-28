@@ -1,5 +1,4 @@
-﻿using AbpOverallAuth.Dtos.TM;
-using AbpOverallAuth.TaskManage.InternalTask;
+﻿using AbpOverallAuth.TaskManage.InternalTask;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -11,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
-using static AbpOverallAuth.Dtos.TM.TMAddTaskDto;
 using TaskStatus = AbpOverallAuth.Enums.InternalTask.TaskStatus;
 
 namespace AbpOverallAuth.XinSong.TM
@@ -55,27 +53,6 @@ namespace AbpOverallAuth.XinSong.TM
             return internalTask;
         }
 
-        public async Task<bool> PressTaskAsync(TMTaskAddInput input)
-        {
-            try
-            {
-                var client = _httpClientFactory.CreateClient("TMClient");
-
-                if (_options.IsSimulation)
-                {
-                    _logger.LogInformation("当前处于仿真模式，请求将发往: " + _options.SimulationUrl);
-                }
-
-                // 发送请求...
-                var response = await client.PostAsJsonAsync("api/v1/xinsong/task_add", input);
-                return true;
-            }
-            catch (Exception ex)
-            {
-
-                _logger.LogError(ex, "添加任务失败");
-                throw;
-            }
-        }
+        
     }
 }

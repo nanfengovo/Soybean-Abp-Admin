@@ -16,5 +16,12 @@ namespace AbpOverallAuth.Interfaces
         /// <param name="input"></param>
         /// <returns></returns>
         public Task CreateTask(CreateTaskDto input);
+
+        /// <summary>
+        /// 派发一个/多个任务
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public Task<bool> PressTaskAsync(string[] ids);
     }
 }

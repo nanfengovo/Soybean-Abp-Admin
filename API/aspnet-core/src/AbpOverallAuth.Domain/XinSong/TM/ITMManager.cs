@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static AbpOverallAuth.Dtos.TM.TMAddTaskDto;
 
 namespace AbpOverallAuth.XinSong.TM
 {
@@ -17,11 +16,5 @@ namespace AbpOverallAuth.XinSong.TM
         /// <returns></returns>
         Task<InternalTask> CreateTask(TaskCreationArgs task);
 
-        /// <summary>
-        /// 派发任务
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        Task<bool> PressTaskAsync(TMTaskAddInput input);
     }
 }
