@@ -4,6 +4,14 @@
         <name>AbpOverallAuth.Application</name>
     </assembly>
     <members>
+        <member name="M:AbpOverallAuth.ThirdParty.TM.TaskService.PressTaskAsync">
+            <summary>
+            给TM派发任务的接口
+            </summary>
+            <param name="tMTask"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
         <member name="M:AbpOverallAuth.TM.TMApplicationService.CreateTask(AbpOverallAuth.Dtos.TM.CreateTaskDto)">
             <summary>
             通过前端提供必要参数创建任务

@@ -19,6 +19,96 @@
             更新 DTO
             </summary>
         </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.TMTaskDto.Bulk_Task_Count">
+            <summary>
+            组合任务子任务数量
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.TMTaskDto.Bulk_Task_Type">
+            <summary>
+            组合任务类型名，即要求配置任务步 xml 的文件名
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.TMTaskDto.Sub_Task">
+            <summary>
+            子任务数组
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.sub_task.AGV_Serial">
+            <summary>
+            指定任务执行车辆编号 ID，0 为不指定
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.sub_task.Robot_Type">
+            <summary>
+            指定任务执行车辆类型
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.sub_task.Area_Property">
+            <summary>
+            指定任务执行车辆区域属性，空为不指定
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.sub_task.Cargo_Id">
+            <summary>
+            货物 RFID，机械臂请求放行时会用到
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.sub_task.Complete_Time">
+            <summary>
+            任务最晚执行时间，YYYY-MM-DD HH:mm::SS，到了这个时间还没执行就会优先执行
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.sub_task.Succession">
+            <summary>
+            任务接续号，两个任务需要连续执行接续号大于 0，相差1，如：第一个接续号 1，第二个接续号 2。与集中上报逻辑互斥不能同时使用。
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.sub_task.Pre_Report">
+            <summary>
+            执行任务前集中上报标记，一般用于目的地不确定任务执行顺序有要求，“0”为无需集中上报
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.sub_task.Priority">
+            <summary>
+            任务执行优先级，取值 0-99，越大越优先
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.sub_task.goal_action">
+            <summary>
+            目的地动作，1-从设备取出物料，2-放置物料到机台，0-普通任务
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.sub_task.Mark">
+            <summary>
+            备用
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.sub_task.Option_Code">
+            <summary>
+            设备操作码，用于 plc 交互执行动作参数，目前有两个字段，用逗号分开
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.sub_task.Target">
+            <summary>
+            地图点
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.sub_task.Storage">
+            <summary>
+            备用
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.sub_task.Task_Serial">
+            <summary>
+            任务名称
+            </summary>
+        </member>
+        <member name="P:AbpOverallAuth.ThirdParty.TM.sub_task.Task_Type">
+            <summary>
+            任务类型，即要求配置任务步 xml 的文件名，非空时优先使用，为空时任务类型采用 bulk_task_type 参数
+            </summary>
+        </member>
         <member name="M:AbpOverallAuth.Interfaces.ITMApplicationService.CreateTask(AbpOverallAuth.Dtos.TM.CreateTaskDto)">
             <summary>
             创建内部任务（通过前端下）

@@ -10,6 +10,6 @@ namespace AbpOverallAuth.Interfaces
 {
     public interface ITaskService:IApplicationService
     {
-        Task<bool> PressTaskAsync(TMTaskDto tMTask);
+        Task<bool> PressTaskAsync();
     }
 }

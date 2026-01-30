@@ -19,6 +19,11 @@ namespace AbpOverallAuth.TaskManage.InternalTask
         public TaskType TaskType { get;private set; } = TaskType.None;
 
         /// <summary>
+        /// 任务流程类型
+        /// </summary>
+        public TaskFlowType FlowType { get; private set; } 
+
+        /// <summary>
         /// 容器id
         /// </summary>
         public string? ContainerId { get; private set; } = string.Empty;
@@ -111,10 +116,11 @@ namespace AbpOverallAuth.TaskManage.InternalTask
         /// <param name="putType"></param>
         /// <param name="fetchMachineType"></param>
         /// <param name="putMachineType"></param>
-        public InternalTask(string id, TaskType taskType,string fromAddress,string? middleAddress,string toAddress,TaskStatus taskStatus,int fetchCount,int putCount,ContainerType fetchType,ContainerType putType,MachineType fetchMachineType, MachineType putMachineType) : base(id)
+        public InternalTask(string id, TaskType taskType,TaskFlowType flowType, string fromAddress,string? middleAddress,string toAddress,TaskStatus taskStatus,int fetchCount,int putCount,ContainerType fetchType,ContainerType putType,MachineType fetchMachineType, MachineType putMachineType) : base(id)
         {
             Id = id;
             TaskType = taskType;
+            FlowType = flowType;
             FromAddress = fromAddress;
             MiddleAddress = middleAddress;
             ToAddress = toAddress;

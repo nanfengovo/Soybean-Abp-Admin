@@ -14,6 +14,8 @@ namespace AbpOverallAuth.Dtos.TM
     {
         public TaskType TaskType { get; set; } = TaskType.None;
 
+        public TaskFlowType FlowType { get; set; }
+
         public string FromAddress { get; set; }
 
         public string? MiddleAddress { get; set; }

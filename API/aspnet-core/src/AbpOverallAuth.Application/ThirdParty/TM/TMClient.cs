@@ -16,7 +16,7 @@ namespace AbpOverallAuth.ThirdParty.TM
             _http = http;
         }
 
-        public Task<HttpResult<TMResp>> CreateTask(TMTaskDto dto)
-        => _http.PostAsync<TMResp>("xinsong", "/api/v1/xinsong/task_add", dto);
+        public Task<HttpResult<TMTaskResp>> CreateTask(TMTaskDto dto)
+        => _http.PostAsync<TMTaskResp>("xinsong", "/api/v1/xinsong/task_add", dto);
     }
 }

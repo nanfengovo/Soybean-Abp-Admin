@@ -13,6 +13,7 @@ namespace AbpOverallAuth.XinSong.TM
         public string Id { get; set; }
         public TaskType TaskType { get; set; } = TaskType.None;
 
+        public TaskFlowType FlowType { get; set; }
         public string FromAddress { get; set; }
 
         public string? MiddleAddress { get; set; }
