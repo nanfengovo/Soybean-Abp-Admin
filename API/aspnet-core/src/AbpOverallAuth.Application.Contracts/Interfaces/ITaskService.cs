@@ -11,5 +11,7 @@ namespace AbpOverallAuth.Interfaces
     public interface ITaskService:IApplicationService
     {
         Task<bool> PressTaskAsync();
+
+        Task CancelTaskAsync(string[] ids);
     }
 }

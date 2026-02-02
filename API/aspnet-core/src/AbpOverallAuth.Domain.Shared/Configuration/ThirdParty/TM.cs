@@ -10,12 +10,8 @@ namespace AbpOverallAuth.Configuration.ThirdParty
     {
         public bool IsSimulation { get; set; }
 
-        public string SimulationUrl { get; set; } = "192.168.253.128";
+        public string SimulationUrl { get; set; } = "http://127.0.0.1";
 
-        public int SimulationPort { get; set; }
-
-        public string URL { get; set; } = "192.168.253.128";
-
-        public int Port { get; set; } 
+        public string URL { get; set; } = "http://192.168.253.128";
     }
 }

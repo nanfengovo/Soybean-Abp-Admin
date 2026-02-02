@@ -126,22 +126,42 @@ namespace AbpOverallAuth.LogManage.Services
             string? businessType = null,
             string? errorStackTrace = null)
         {
-            var log = await LogAsync(
-                sysName,
-                url,
-                httpMethod,
-                requestBody,
-                null,
-                statusCode,
-                duration,
-                businessId,
-                businessType);
+            var currentPrincipal = _currentPrincipalAccessor.Principal;
 
-            log.IsSuccess = false;
-            log.ErrorMessage = TruncateString(errorMessage, 2000);
-            log.ErrorStackTrace = TruncateString(errorStackTrace, 4000);
+            var log = new ThirdPartyCallLog
+            {
+                SysName = sysName,
+                Url = url,
+                Path = TryGetPathFromUrl(url),
+                HttpMethod = httpMethod,
+                RequestBody = TruncateString(requestBody, 10000),
+                ResponseBody = null,
+                StatusCode = statusCode,
+                Duration = duration,
+                BusinessId = businessId,
+                BusinessType = businessType,
+                ClientIpAddress = null,
+                TraceId = _correlationIdProvider.Get(),
+                UserId = GetUserId(currentPrincipal),
+                TenantId = GetTenantId(currentPrincipal),
+                IsSuccess = false,
+                ErrorMessage = TruncateString(errorMessage, 2000),
+                ErrorStackTrace = TruncateString(errorStackTrace, 4000)
+            };
 
-            return await _thirdPartyCallLogRepository.UpdateAsync(log, autoSave: true);
+            return await _thirdPartyCallLogRepository.InsertAsync(log, autoSave: true);
+        }
+
+        private static string? TryGetPathFromUrl(string url)
+        {
+            try
+            {
+                return new Uri(url).PathAndQuery;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -204,9 +224,25 @@ namespace AbpOverallAuth.LogManage.Services
 
         private static string GetClientName(HttpRequestMessage request)
         {
+            // 优先从 X-System-Name 头获取
+            if (request.Headers.TryGetValues("X-System-Name", out var systemNameHeaders))
+            {
+                var name = systemNameHeaders.FirstOrDefault();
+                if (!string.IsNullOrEmpty(name))
+                    return name;
+            }
+
+            // 其次从 X-Client-Name 头获取
             if (request.Headers.TryGetValues("X-Client-Name", out var clientNameHeaders))
             {
                 return clientNameHeaders.FirstOrDefault() ?? "Unknown";
+            }
+
+            // 从Host推断
+            var host = request.RequestUri?.Host;
+            if (!string.IsNullOrEmpty(host))
+            {
+                return host;
             }
 
             return request.Headers.UserAgent.ToString().Split(' ').FirstOrDefault() ?? "Unknown";
