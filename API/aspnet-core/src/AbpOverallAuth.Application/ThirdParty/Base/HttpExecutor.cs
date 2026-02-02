@@ -43,8 +43,8 @@ namespace AbpOverallAuth.ThirdParty.Base
             var client = Create(system);
             var json = JsonSerializer.Serialize(body);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-
             var res = await client.PostAsync(url, content);
+            _logger.LogInformation("TM RequestUri => {Base}{Url}", client.BaseAddress,url);
             return await BuildResult<T>(res);
         }
 

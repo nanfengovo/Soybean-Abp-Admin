@@ -1,4 +1,5 @@
-﻿using AbpOverallAuth.Enums.InternalTask;
+﻿using AbpOverallAuth.Configuration.ThirdParty;
+using AbpOverallAuth.Enums.InternalTask;
 using AbpOverallAuth.Interfaces;
 using AbpOverallAuth.TaskManage.InternalTask;
 using AbpOverallAuth.ThirdParty.Base;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Domain.Repositories;
 using TaskStatus = AbpOverallAuth.Enums.InternalTask.TaskStatus;
+using Microsoft.Extensions.Options;
 
 namespace AbpOverallAuth.ThirdParty.TM
 {
@@ -27,13 +29,15 @@ namespace AbpOverallAuth.ThirdParty.TM
 
         private readonly ITaskWorkflowPolicy _taskWorkflowPolicy;
 
-        public TaskService(IHttpExecutor http, ILogger<TaskService> logger, IRepository<InternalTask> internalTask, FetchPutTaskFlowBuilder taskBuilder, ITaskWorkflowPolicy taskWorkflowPolicy)
+        private readonly AbpOverallAuth.Configuration.ThirdParty.TM _tm;
+        public TaskService(IHttpExecutor http, ILogger<TaskService> logger, IRepository<InternalTask> internalTask, FetchPutTaskFlowBuilder taskBuilder, ITaskWorkflowPolicy taskWorkflowPolicy, IOptions<Configuration.ThirdParty.TM> tm)
         {
             _http = http;
             _logger = logger;
             _internalTask = internalTask;
             _taskBuilder = taskBuilder;
             _taskWorkflowPolicy = taskWorkflowPolicy;
+            _tm = tm.Value;
         }
 
         /// <summary>
@@ -48,16 +52,22 @@ namespace AbpOverallAuth.ThirdParty.TM
                 t => t.TaskStatus == TaskStatus.Init
             );
 
+            if (!tasks.Any())
+            {
+                _logger.LogInformation("当前没有待派发的任务,请先创建任务！！");
+                throw new UserFriendlyException("当前没有待派发的任务");
+            }
+
             foreach (var task in tasks)
             {
                 var dto = _taskBuilder.Build(task);
-
-                await _http.PostAsync<HttpResult<TMTaskResp>>(
+                _logger.LogInformation("TM REQUEST DTO => " + dto);
+                var raw = await _http.PostAsync<HttpResult<TMTaskResp>>(
                     "TM",
                     "/api/v1/xinsong/task_add",
                     dto
                 );
-
+                _logger.LogInformation("TM RAW RESPONSE => " + raw);
                 task.ExecuteAction(
                     TaskAction.Dispatch,
                     _taskWorkflowPolicy
@@ -66,50 +76,6 @@ namespace AbpOverallAuth.ThirdParty.TM
             }
 
             return true;
-        }
-
-
-        private TMTaskDto ConvertTask(InternalTask tMTask,int taskcode1,int taskcode2,string type)
-        {
-            var taskDto = new TMTaskDto
-            {
-                Bulk_Task_Count = 1,
-                Bulk_Task_Type = tMTask.TaskType.ToString(),
-                Sub_Task = new List<sub_task>()
-            };
-
-            sub_task sub_Task = new sub_task()
-            {
-                AGV_Serial = 0,
-                Robot_Type = "99",
-                Succession = 0,
-                Area_Property = new List<string>(),
-                Cargo_Id = "#",
-                Complete_Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                Pre_Report = "0",
-                Priority = 0,
-                goal_action = 0,
-                Mark = "3",
-                Option_Code = $"{taskcode1},{taskcode2}",
-                Storage = tMTask.FromAddress,
-                Task_Serial = tMTask.Id+type
-            };
-
-            int fromAddr = 0;
-            var success = int.TryParse(tMTask.FromAddress,out fromAddr);
-            if (success)
-            {
-                _logger.LogInformation($"任务号：{tMTask.Id}的任务作业点为{fromAddr}");
-            }
-            else
-            {
-                throw new BusinessException("InvalidFromAddress")
-                    .WithData("FromAddress", tMTask.FromAddress)
-                    .WithData("TaskId", tMTask.Id);
-            }
-
-            sub_Task.Target = fromAddr;
-            return taskDto;
         }
     }
 }

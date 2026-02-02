@@ -93,9 +93,22 @@ namespace AbpOverallAuth.TM
 
         private TMTaskDto CreateBaseDto(InternalTask task)
         {
+            var Bulk_Task_Count = 1;
+            switch (task.FlowType)
+            {
+                case TaskFlowType.FetchPut:
+                    Bulk_Task_Count = 2;
+                    break;
+                case TaskFlowType.FetchPutPut:
+                    Bulk_Task_Count = 3;
+                    break;
+                default:
+                    // 保持默认值 1
+                    break;
+            }
             return new TMTaskDto
             {
-                Bulk_Task_Count = 1,
+                Bulk_Task_Count = Bulk_Task_Count,
                 Bulk_Task_Type = "task",
                 Sub_Task = new List<sub_task>()
             };
