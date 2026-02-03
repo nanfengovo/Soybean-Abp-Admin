@@ -553,6 +553,45 @@ declare namespace App {
           };
           creativity: string;
         };
+        agvMap: {
+          title: string;
+          importMap: string;
+          exportMap: string;
+          reset: string;
+          darkMode: string;
+          lightMode: string;
+          zoomIn: string;
+          zoomOut: string;
+          instructions: string;
+          onlineDevices: string;
+          zoom: string;
+          routeManagement: string;
+          addRoute: string;
+          agvStatus: string;
+          agvName: string;
+          agvPosition: string;
+          agvRoute: string;
+          agvBattery: string;
+          agvPause: string;
+          agvResume: string;
+          statusRunning: string;
+          statusCharging: string;
+          statusIdle: string;
+          statusPaused: string;
+          nodes: string;
+          importSuccess: string;
+          importError: string;
+          exportSuccess: string;
+          addRouteTitle: string;
+          editRouteTitle: string;
+          routeName: string;
+          routeColor: string;
+          routeNodes: string;
+          selectNodes: string;
+          saveRoute: string;
+          deleteRoute: string;
+          confirmDeleteRoute: string;
+        };
         manage: {
           common: {
             status: {

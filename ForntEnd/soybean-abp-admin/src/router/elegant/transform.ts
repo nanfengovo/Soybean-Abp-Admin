@@ -178,6 +178,7 @@ const routeMap: RouteMap = {
   "overallauth_role": "/overallauth/role",
   "overallauth_user": "/overallauth/user",
   "system": "/system",
+  "system_agvmap": "/system/agvmap",
   "system_dashboard": "/system/dashboard"
 };
 

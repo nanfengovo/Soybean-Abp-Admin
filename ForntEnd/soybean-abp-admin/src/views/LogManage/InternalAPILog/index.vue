@@ -191,7 +191,7 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
           <NButton type="primary" ghost size="small" onClick={() => viewDetail(row)}>
             查看详情
           </NButton>
-          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
+          {/* <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
             {{
               default: () => $t('common.confirmDelete'),
               trigger: () => (
@@ -200,7 +200,7 @@ const { columns, columnChecks, data, getData, getDataByPage, loading, mobilePagi
                 </NButton>
               )
             }}
-          </NPopconfirm>
+          </NPopconfirm> */}
         </NSpace>
       )
     }

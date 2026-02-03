@@ -32,6 +32,7 @@ declare module "@elegant-router/types" {
     "overallauth_role": "/overallauth/role";
     "overallauth_user": "/overallauth/user";
     "system": "/system";
+    "system_agvmap": "/system/agvmap";
     "system_dashboard": "/system/dashboard";
   };
 
@@ -95,6 +96,7 @@ declare module "@elegant-router/types" {
     | "logmanage_internalapilog"
     | "overallauth_role"
     | "overallauth_user"
+    | "system_agvmap"
     | "system_dashboard"
     | "403"
     | "404"

@@ -20,6 +20,7 @@ export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<Ro
   logmanage_internalapilog: () => import("@/views/LogManage/InternalAPILog/index.vue"),
   overallauth_role: () => import("@/views/OverAllAuth/Role/index.vue"),
   overallauth_user: () => import("@/views/OverAllAuth/User/index.vue"),
+  system_agvmap: () => import("@/views/System/AGVMap/index.vue"),
   system_dashboard: () => import("@/views/System/Dashboard/index.vue"),
   403: () => import("@/views/_builtin/403/index.vue"),
   404: () => import("@/views/_builtin/404/index.vue"),

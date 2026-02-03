@@ -184,6 +184,15 @@ export const generatedRoutes: GeneratedRoute[] = [
     },
     children: [
       {
+        name: 'system_agvmap',
+        path: '/system/agvmap',
+        component: 'view.system_agvmap',
+        meta: {
+          title: 'system_agvmap',
+          i18nKey: 'route.system_agvmap'
+        }
+      },
+      {
         name: 'system_dashboard',
         path: '/system/dashboard',
         component: 'view.system_dashboard',
