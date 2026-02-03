@@ -28,6 +28,9 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     buttons: []
   });
 
+  /** 权限是否已加载完成 */
+  const isPermissionsLoaded = ref(false);
+
   /** is super role in static route */
   const isStaticSuper = computed(() => {
     const { VITE_AUTH_ROUTE_MODE, VITE_STATIC_SUPER_ROLE } = import.meta.env;
@@ -45,6 +48,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     clearAuthStorage();
 
     authStore.$reset();
+    isPermissionsLoaded.value = false;
 
     if (!route.meta.constant) {
       await toLogin();
@@ -180,10 +184,12 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
       await Promise.allSettled(promises);
       userInfo.buttons = Array.from(allPermissions);
+      isPermissionsLoaded.value = true;
       // 调试：打印获取到的权限列表
       console.log('用户权限列表:', userInfo.buttons);
     } catch {
       userInfo.buttons = [];
+      isPermissionsLoaded.value = true;
     }
   }
 
@@ -237,6 +243,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     isStaticSuper,
     isLogin,
     loginLoading,
+    isPermissionsLoaded,
     resetStore,
     login,
     initUserInfo

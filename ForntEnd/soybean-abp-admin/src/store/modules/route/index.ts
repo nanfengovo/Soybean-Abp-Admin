@@ -182,10 +182,8 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
     console.log('initAuthRoute - userId before init:', authStore.userInfo.userId);
     console.log('initAuthRoute - buttons before init:', authStore.userInfo.buttons);
 
-    // 如果没有 userId，或者有 userId 但 buttons 为空且有角色（说明权限还没获取）
-    const needInitUserInfo =
-      !authStore.userInfo.userId ||
-      (authStore.userInfo.roles.length > 0 && authStore.userInfo.buttons.length === 0);
+    // 如果没有 userId，或者权限还没加载完成，则需要初始化用户信息
+    const needInitUserInfo = !authStore.userInfo.userId || !authStore.isPermissionsLoaded;
 
     if (needInitUserInfo) {
       await authStore.initUserInfo();
