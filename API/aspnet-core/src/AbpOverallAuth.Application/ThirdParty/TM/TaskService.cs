@@ -107,7 +107,7 @@ namespace AbpOverallAuth.ThirdParty.TM
             if (!tasks.Any())
             {
                 _logger.LogInformation("当前没有待派发的任务,请先创建任务！！");
-                throw new UserFriendlyException("当前没有待派发的任务");
+                throw new UserFriendlyException("当前没有待派发的任务,请先创建任务！！");
             }
 
             foreach (var task in tasks)

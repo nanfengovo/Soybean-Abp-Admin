@@ -123,14 +123,14 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
-        name: 'logmanage_lnternalapilog',
-        path: '/logmanage/lnternalapilog',
-        component: 'view.logmanage_lnternalapilog',
+        name: 'logmanage_internalapilog',
+        path: '/logmanage/internalapilog',
+        component: 'view.logmanage_internalapilog',
         meta: {
-          title: 'logmanage_lnternalapilog',
-          i18nKey: 'route.logmanage_lnternalapilog',
-          order: 4,
-          icon: 'mdi:api'
+          title: 'logmanage_internalapilog',
+          i18nKey: 'route.logmanage_internalapilog',
+          order: 5,
+          icon: 'mdi:api-off'
         }
       }
     ]

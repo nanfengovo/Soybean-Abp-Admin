@@ -234,7 +234,7 @@ const local: App.I18n.Schema = {
     datamanage_loactionmap: '机台点位映射',
     logmanage: '日志管理',
     logmanage_externalapilog: '外部接口日志',
-    logmanage_lnternalapilog: '内部接口日志'
+    logmanage_internalapilog: '内部接口日志'
   },
   page: {
     login: {

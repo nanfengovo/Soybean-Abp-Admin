@@ -238,7 +238,7 @@ const local: App.I18n.Schema = {
     datamanage_loactionmap: 'Location Map',
     logmanage: 'Log Management',
     logmanage_externalapilog: 'External API Log',
-    logmanage_lnternalapilog: 'Internal API Log'
+    logmanage_internalapilog: 'Internal API Log'
   },
   page: {
     login: {

@@ -341,5 +341,142 @@ declare namespace Api {
       /** 描述 */
       description?: string;
     };
+
+    type ExAPILogSearchParams = {
+      /** 模糊查询字段 */
+      Filter?: string;
+      /** 排序字段 */
+      Sorting?: string;
+      /** 跳过记录数 */
+      SkipCount?: number;
+      /** 最大结果数 */
+      MaxResultCount?: number;
+    };
+
+    /** external API log */
+    type ExternalAPILog = {
+      /** id */
+      id: string;
+      /** 系统名称 */
+      sysName: string;
+      /** 业务ID */
+      businessId: string | null;
+      /** 业务类型 */
+      businessType: string | null;
+      /** 请求URL */
+      url: string;
+      /** 请求路径 */
+      path: string;
+      /** HTTP方法 */
+      httpMethod: string;
+      /** 请求头 */
+      requestHeaders: string | null;
+      /** 请求体 */
+      requestBody: string | null;
+      /** 状态码 */
+      statusCode: number;
+      /** 响应体 */
+      responseBody: string | null;
+      /** 响应头 */
+      responseHeaders: string | null;
+      /** 耗时(毫秒) */
+      duration: number;
+      /** 客户端IP地址 */
+      clientIpAddress: string | null;
+      /** 追踪ID */
+      traceId: string;
+      /** 是否成功 */
+      isSuccess: boolean;
+      /** 错误信息 */
+      errorMessage: string | null;
+      /** 错误堆栈 */
+      errorStackTrace: string | null;
+      /** 用户ID */
+      userId: string | null;
+      /** 租户ID */
+      tenantId: string | null;
+      /** 额外数据 */
+      extraData: string | null;
+      /** 创建时间 */
+      creationTime: string;
+    };
+
+    /** external API log list */
+    type ExternalAPILogList = Common.AbpPaginatingQueryRecord<ExternalAPILog>;
+
+    /** internal API log search params */
+    type InternalAPILogSearchParams = {
+      /** 模糊查询字段 (可搜索URL、用户名、客户端IP等) */
+      Filter?: string;
+      /** 开始时间 */
+      StartTime?: string;
+      /** 结束时间 */
+      EndTime?: string;
+      /** HTTP方法 */
+      HttpMethod?: string;
+      /** 用户ID */
+      UserId?: string;
+      /** 最小执行时间 (毫秒) */
+      MinExecutionDuration?: number;
+      /** 最大执行时间 (毫秒) */
+      MaxExecutionDuration?: number;
+      /** 是否有异常 */
+      HasException?: boolean;
+      /** HTTP状态码 */
+      HttpStatusCode?: number;
+      /** 排序字段 */
+      Sorting?: string;
+      /** 跳过记录数 */
+      SkipCount?: number;
+      /** 最大结果数 */
+      MaxResultCount?: number;
+    };
+
+    /** internal API log */
+    type InternalAPILog = {
+      /** id */
+      id: string;
+      /** 应用名称 */
+      applicationName: string;
+      /** 用户ID */
+      userId: string | null;
+      /** 用户名 */
+      userName: string | null;
+      /** 租户ID */
+      tenantId: string | null;
+      /** 租户名称 */
+      tenantName: string | null;
+      /** 模拟用户ID */
+      impersonatorUserId: string | null;
+      /** 模拟租户ID */
+      impersonatorTenantId: string | null;
+      /** 执行时间 */
+      executionTime: string;
+      /** 执行耗时(毫秒) */
+      executionDuration: number;
+      /** 客户端IP地址 */
+      clientIpAddress: string | null;
+      /** 客户端名称 */
+      clientName: string | null;
+      /** 客户端ID */
+      clientId: string | null;
+      /** 关联ID */
+      correlationId: string | null;
+      /** 浏览器信息 */
+      browserInfo: string | null;
+      /** HTTP方法 */
+      httpMethod: string;
+      /** 请求URL */
+      url: string;
+      /** 异常信息 */
+      exceptions: string | null;
+      /** HTTP状态码 */
+      httpStatusCode: number;
+      /** 备注 */
+      comments: string | null;
+    };
+
+    /** internal API log list */
+    type InternalAPILogList = Common.AbpPaginatingQueryRecord<InternalAPILog>;
   }
 }

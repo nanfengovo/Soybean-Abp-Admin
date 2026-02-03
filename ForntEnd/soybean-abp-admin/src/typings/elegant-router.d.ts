@@ -27,7 +27,7 @@ declare module "@elegant-router/types" {
     "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?";
     "logmanage": "/logmanage";
     "logmanage_externalapilog": "/logmanage/externalapilog";
-    "logmanage_lnternalapilog": "/logmanage/lnternalapilog";
+    "logmanage_internalapilog": "/logmanage/internalapilog";
     "overallauth": "/overallauth";
     "overallauth_role": "/overallauth/role";
     "overallauth_user": "/overallauth/user";
@@ -92,7 +92,7 @@ declare module "@elegant-router/types" {
     RouteKey,
     | "datamanage_loactionmap"
     | "logmanage_externalapilog"
-    | "logmanage_lnternalapilog"
+    | "logmanage_internalapilog"
     | "overallauth_role"
     | "overallauth_user"
     | "system_dashboard"

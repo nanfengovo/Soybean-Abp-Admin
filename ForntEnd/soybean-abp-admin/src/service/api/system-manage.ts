@@ -236,3 +236,53 @@ export function fetchDeleteLocationMap(id: string) {
     method: 'delete'
   });
 }
+
+/** get external API log list */
+export function fetchGetExternalAPILogList(params?: Api.SystemManage.ExAPILogSearchParams) {
+  return request<Api.SystemManage.ExternalAPILogList>({
+    url: 'api/app/a-piLog',
+    method: 'get',
+    params
+  });
+}
+
+/** get external API log by id */
+export function fetchGetExternalAPILog(id: string) {
+  return request<Api.SystemManage.ExternalAPILog>({
+    url: `api/app/a-piLog/${id}`,
+    method: 'get'
+  });
+}
+
+/** delete external API log */
+export function fetchDeleteExternalAPILog(id: string) {
+  return request({
+    url: `api/app/a-piLog/${id}`,
+    method: 'delete'
+  });
+}
+
+/** get internal API log list */
+export function fetchGetInternalAPILogList(params?: Api.SystemManage.InternalAPILogSearchParams) {
+  return request<Api.SystemManage.InternalAPILogList>({
+    url: 'api/app/internal-api-log',
+    method: 'get',
+    params
+  });
+}
+
+/** get internal API log by id */
+export function fetchGetInternalAPILog(id: string) {
+  return request<Api.SystemManage.InternalAPILog>({
+    url: `api/app/internal-api-log/${id}`,
+    method: 'get'
+  });
+}
+
+/** delete internal API log */
+export function fetchDeleteInternalAPILog(id: string) {
+  return request({
+    url: `api/app/internal-api-log/${id}`,
+    method: 'delete'
+  });
+}

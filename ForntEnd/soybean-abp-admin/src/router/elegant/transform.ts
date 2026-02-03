@@ -173,7 +173,7 @@ const routeMap: RouteMap = {
   "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?",
   "logmanage": "/logmanage",
   "logmanage_externalapilog": "/logmanage/externalapilog",
-  "logmanage_lnternalapilog": "/logmanage/lnternalapilog",
+  "logmanage_internalapilog": "/logmanage/internalapilog",
   "overallauth": "/overallauth",
   "overallauth_role": "/overallauth/role",
   "overallauth_user": "/overallauth/user",

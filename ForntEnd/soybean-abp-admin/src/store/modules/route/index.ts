@@ -177,6 +177,12 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
 
   /** Init auth route */
   async function initAuthRoute() {
+    // 如果已经初始化过，直接返回
+    if (isInitAuthRoute.value) {
+      console.log('initAuthRoute - already initialized, skipping');
+      return;
+    }
+
     // 确保用户信息已初始化（用于页面刷新时恢复用户状态）
     // 检查 userId 和 buttons 都已加载，因为登录时可能先设置了 userId，但权限还在加载中
     console.log('initAuthRoute - userId before init:', authStore.userInfo.userId);
