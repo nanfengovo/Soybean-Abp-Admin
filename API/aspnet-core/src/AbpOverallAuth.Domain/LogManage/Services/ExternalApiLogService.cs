@@ -24,15 +24,18 @@ namespace AbpOverallAuth.LogManage.Services
         private readonly IRepository<ThirdPartyCallLog, long> _thirdPartyCallLogRepository;
         private readonly ICurrentPrincipalAccessor _currentPrincipalAccessor;
         private readonly ICorrelationIdProvider _correlationIdProvider;
+        private readonly IUnitOfWorkManager _unitOfWorkManager;
 
         public ExternalApiLogService(
             IRepository<ThirdPartyCallLog, long> thirdPartyCallLogRepository,
             ICurrentPrincipalAccessor currentPrincipalAccessor,
-            ICorrelationIdProvider correlationIdProvider)
+            ICorrelationIdProvider correlationIdProvider,
+            IUnitOfWorkManager unitOfWorkManager)
         {
             _thirdPartyCallLogRepository = thirdPartyCallLogRepository;
             _currentPrincipalAccessor = currentPrincipalAccessor;
             _correlationIdProvider = correlationIdProvider;
+            _unitOfWorkManager = unitOfWorkManager;
         }
 
         /// <summary>
@@ -67,7 +70,7 @@ namespace AbpOverallAuth.LogManage.Services
             {
                 SysName = sysName,
                 Url = url,
-                Path = new Uri(url).PathAndQuery,
+                Path = TryGetPathFromUrl(url),
                 HttpMethod = httpMethod,
                 RequestBody = TruncateString(requestBody, 10000),
                 ResponseBody = TruncateString(responseBody, 10000),
@@ -83,7 +86,14 @@ namespace AbpOverallAuth.LogManage.Services
                 IsSuccess = statusCode >= 200 && statusCode < 300
             };
 
-            return await _thirdPartyCallLogRepository.InsertAsync(log, autoSave: true);
+            // 使用独立的工作单元，确保日志不会因为外层事务回滚而丢失
+            using (var uow = _unitOfWorkManager.Begin(requiresNew: true, isTransactional: true))
+            {
+                await _thirdPartyCallLogRepository.InsertAsync(log, autoSave: true);
+                await uow.CompleteAsync();
+            }
+
+            return log;
         }
 
         /// <summary>
@@ -149,7 +159,14 @@ namespace AbpOverallAuth.LogManage.Services
                 ErrorStackTrace = TruncateString(errorStackTrace, 4000)
             };
 
-            return await _thirdPartyCallLogRepository.InsertAsync(log, autoSave: true);
+            // 使用独立的工作单元，确保日志不会因为外层事务回滚而丢失
+            using (var uow = _unitOfWorkManager.Begin(requiresNew: true, isTransactional: true))
+            {
+                await _thirdPartyCallLogRepository.InsertAsync(log, autoSave: true);
+                await uow.CompleteAsync();
+            }
+
+            return log;
         }
 
         private static string? TryGetPathFromUrl(string url)
@@ -219,7 +236,14 @@ namespace AbpOverallAuth.LogManage.Services
                 ErrorMessage = errorMessage != null ? TruncateString(errorMessage, 2000) : null
             };
 
-            return await _thirdPartyCallLogRepository.InsertAsync(log, autoSave: true);
+            // 使用独立的工作单元，确保日志不会因为外层事务回滚而丢失
+            using (var uow = _unitOfWorkManager.Begin(requiresNew: true, isTransactional: true))
+            {
+                await _thirdPartyCallLogRepository.InsertAsync(log, autoSave: true);
+                await uow.CompleteAsync();
+            }
+
+            return log;
         }
 
         private static string GetClientName(HttpRequestMessage request)

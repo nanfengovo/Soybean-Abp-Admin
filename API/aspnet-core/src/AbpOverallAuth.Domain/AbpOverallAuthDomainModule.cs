@@ -1,4 +1,5 @@
-﻿using AbpOverallAuth.MultiTenancy;
+﻿using AbpOverallAuth.LogManage.Services;
+using AbpOverallAuth.MultiTenancy;
 using AbpOverallAuth.XinSong.TM;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -68,7 +69,13 @@ public class AbpOverallAuthDomainModule : AbpModule
         var configuration = context.Services.GetConfiguration();
         // 直接绑定到 TM 这一层
         Configure<TMOptions>(configuration.GetSection("ThirdParty:TM"));
+
+        // 注册外部API日志服务和日志记录Handler
+        context.Services.AddScoped<ExternalApiLogService>();
+        context.Services.AddTransient<LoggingDelegatingHandler>();
+
         // 注册 HttpClient 并使用 Options 中的值
+        // 所有第三方接口调用都会通过 LoggingDelegatingHandler 自动记录日志
         context.Services.AddHttpClient("TMClient", (sp, client) =>
         {
             // 从 DI 容器中获取绑定的配置值
@@ -81,7 +88,10 @@ public class AbpOverallAuthDomainModule : AbpModule
             }
 
             client.Timeout = TimeSpan.FromSeconds(10);
-        });
+            // 添加系统名称标识，用于日志记录
+            client.DefaultRequestHeaders.Add("X-System-Name", "TMClient");
+        })
+        .AddHttpMessageHandler<LoggingDelegatingHandler>(); // 添加日志记录Handler，自动记录所有请求
 
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());

@@ -51,11 +51,8 @@ namespace AbpOverallAuth.ThirdParty.TM
         {
             if (ids == null || ids.Length == 0)
                 throw new UserFriendlyException("取消任务需要传入取消任务的ID");
-
             var idList = ids.ToList(); // ⭐ 关键
-
             var tasks = await _internalTask.GetListAsync(x => idList.Contains(x.Id));
-
             if (!tasks.Any())
                 throw new UserFriendlyException("未找到要取消的任务");
             var dto = new
@@ -88,12 +85,11 @@ namespace AbpOverallAuth.ThirdParty.TM
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                _logger.LogWarning(nameof(CancelTaskAsync)+"方法出现异常，异常信息为："+ex.Message);
+                throw new UserFriendlyException(ex.Message);
             }
-            
         }
 
         /// <summary>
@@ -152,7 +148,7 @@ namespace AbpOverallAuth.ThirdParty.TM
                         errorMsg,
                         task.Id
                         );
-                    throw new UserFriendlyException("派发任务失败！");
+                    throw new UserFriendlyException($"派发任务失败！失败原因为{errorMsg}");
                 }
             }
 

@@ -1,13 +1,11 @@
-using AbpOverallAuth.LogManage.Services;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AbpOverallAuth.ThirdParty.Base
+namespace AbpOverallAuth.LogManage.Services
 {
     /// <summary>
     /// HTTP请求日志记录处理器
@@ -38,6 +36,7 @@ namespace AbpOverallAuth.ThirdParty.Base
             var stopwatch = Stopwatch.StartNew();
             HttpResponseMessage? response = null;
             string? errorMessage = null;
+            string? errorStackTrace = null;
 
             // 在发送前缓存请求体（因为 Content 只能读取一次）
             string? requestBody = null;
@@ -55,6 +54,8 @@ namespace AbpOverallAuth.ThirdParty.Base
 
             // 获取系统名称
             string sysName = GetSystemName(request);
+            var fullUrl = request.RequestUri?.ToString() ?? string.Empty;
+            var httpMethod = request.Method.Method;
 
             try
             {
@@ -66,25 +67,15 @@ namespace AbpOverallAuth.ThirdParty.Base
                     await response.Content.LoadIntoBufferAsync();
                 }
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                errorMessage = ex.Message;
-                _logger.LogError(ex, "HTTP请求失败: {Url}", request.RequestUri);
-                throw;
-            }
-            finally
-            {
                 stopwatch.Stop();
 
-                // 读取响应体（由于已经 LoadIntoBufferAsync，可以多次读取）
+                // 读取响应体
                 string? responseBody = null;
-                if (response?.Content != null)
+                if (response.Content != null)
                 {
                     try
                     {
-                        responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+                        responseBody = await response.Content.ReadAsStringAsync(CancellationToken.None);
                     }
                     catch
                     {
@@ -92,25 +83,13 @@ namespace AbpOverallAuth.ThirdParty.Base
                     }
                 }
 
+                // 记录请求日志（根据状态码判断成功或失败）
+                var statusCode = (int)response.StatusCode;
+                var isSuccess = response.IsSuccessStatusCode; // 2xx 状态码
+
                 try
                 {
-                    // 直接调用 LogAsync 而不是 LogHttpRequestAsync，避免重复读取 Content
-                    var fullUrl = request.RequestUri?.ToString() ?? string.Empty;
-                    var httpMethod = request.Method.Method;
-                    var statusCode = response != null ? (int)response.StatusCode : 500;
-
-                    if (errorMessage != null)
-                    {
-                        await _logService.LogErrorAsync(
-                            sysName,
-                            fullUrl,
-                            httpMethod,
-                            requestBody,
-                            errorMessage,
-                            statusCode,
-                            stopwatch.ElapsedMilliseconds);
-                    }
-                    else
+                    if (isSuccess)
                     {
                         await _logService.LogAsync(
                             sysName,
@@ -121,12 +100,52 @@ namespace AbpOverallAuth.ThirdParty.Base
                             statusCode,
                             stopwatch.ElapsedMilliseconds);
                     }
+                    else
+                    {
+                        // 非 2xx 状态码视为失败
+                        await _logService.LogErrorAsync(
+                            sysName,
+                            fullUrl,
+                            httpMethod,
+                            requestBody,
+                            responseBody ?? $"HTTP {statusCode} 错误",
+                            statusCode,
+                            stopwatch.ElapsedMilliseconds);
+                    }
                 }
                 catch (Exception logEx)
                 {
-                    // 日志记录失败不应影响主流程
                     _logger.LogWarning(logEx, "记录HTTP请求日志失败: {Message}", logEx.Message);
                 }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                stopwatch.Stop();
+                errorMessage = ex.Message;
+                errorStackTrace = ex.StackTrace;
+                _logger.LogError(ex, "HTTP请求失败: {Url}", request.RequestUri);
+
+                // 记录失败的请求日志 - 使用 CancellationToken.None 确保日志能够写入
+                try
+                {
+                    await _logService.LogErrorAsync(
+                        sysName,
+                        fullUrl,
+                        httpMethod,
+                        requestBody,
+                        errorMessage,
+                        0, // 没有响应时状态码为0
+                        stopwatch.ElapsedMilliseconds,
+                        errorStackTrace: errorStackTrace);
+                }
+                catch (Exception logEx)
+                {
+                    _logger.LogWarning(logEx, "记录HTTP请求错误日志失败: {Message}", logEx.Message);
+                }
+
+                throw;
             }
         }
 

@@ -36,19 +36,14 @@ public class AbpOverallAuthApplicationModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        // 1️⃣ 注册依赖
+        // 注册依赖
         context.Services.AddTransient<IHttpExecutor, HttpExecutor>();
         context.Services.AddTransient<ITaskWorkflowPolicy, ProjectAWorkflowPolicy>();
         context.Services.AddTransient<FetchPutTaskFlowBuilder>();
 
-        // 注册外部API日志服务
-        context.Services.AddScoped<ExternalApiLogService>();
-        // 注册日志记录Handler
-        context.Services.AddTransient<LoggingDelegatingHandler>();
-
-        //配置第三方api相关的
-        // 注册命名 HttpClient
-        var configuration = context.Services.GetConfiguration(); // 拿到 IConfiguration
+        // 配置第三方api相关的
+        // 注册命名 HttpClient（使用 Domain 层的 LoggingDelegatingHandler 自动记录日志）
+        var configuration = context.Services.GetConfiguration();
 
         context.Services.Configure<AbpOverallAuth.Configuration.ThirdParty.TM>(configuration.GetSection("ThirdParty:TM"));
         context.Services.AddHttpClient("TM", (serviceProvider, client) =>
@@ -75,7 +70,8 @@ public class AbpOverallAuthApplicationModule : AbpModule
             // 如果需要默认 Bearer Token
             // client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "你的Token");
         })
-        .AddHttpMessageHandler<LoggingDelegatingHandler>(); // 添加日志记录Handler
+        .AddHttpMessageHandler<LoggingDelegatingHandler>(); // 添加日志记录Handler，自动记录所有第三方接口调用
+
         Configure<AbpAutoMapperOptions>(options =>
         {
             options.AddMaps<AbpOverallAuthApplicationModule>();

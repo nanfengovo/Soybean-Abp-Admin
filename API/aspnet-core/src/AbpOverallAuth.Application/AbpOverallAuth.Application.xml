@@ -4,22 +4,6 @@
         <name>AbpOverallAuth.Application</name>
     </assembly>
     <members>
-        <member name="T:AbpOverallAuth.ThirdParty.Base.LoggingDelegatingHandler">
-            <summary>
-            HTTP请求日志记录处理器
-            自动拦截所有通过HttpClient发出的请求并记录到数据库
-            </summary>
-        </member>
-        <member name="F:AbpOverallAuth.ThirdParty.Base.LoggingDelegatingHandler.SystemNameHeader">
-            <summary>
-            用于标识系统名称的请求头
-            </summary>
-        </member>
-        <member name="M:AbpOverallAuth.ThirdParty.Base.LoggingDelegatingHandler.GetSystemName(System.Net.Http.HttpRequestMessage)">
-            <summary>
-            获取系统名称
-            </summary>
-        </member>
         <member name="M:AbpOverallAuth.ThirdParty.TM.TaskService.CancelTaskAsync(System.String[])">
             <summary>
             取消任务
