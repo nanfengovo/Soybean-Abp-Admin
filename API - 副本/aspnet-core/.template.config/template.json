@@ -1,0 +1,10 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "nanfengovo",
+  "classifications": ["API", "ABP"],
+  "identity": "RCS.Project.Template",
+  "name": "RCS Project Template",
+  "shortName": "rcs",
+  "sourceName": "AbpOverallAuth",
+  "preferNameDirectory": true
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RCS.Application</name>
+    </assembly>
+    <members>
+        <member name="M:RCS.ThirdParty.TM.ApiForTmService.ArriveTarget(System.Object)">
+            <summary>
+            到达站点上报
+            </summary>
+            <param name="requestObj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RCS.ThirdParty.TM.ApiForTmService.TaskFinish(System.Object)">
+            <summary>
+            完成任务上报
+            </summary>
+            <param name="requestObj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RCS.ThirdParty.TM.TaskService.CancelTaskAsync(System.String[])">
+            <summary>
+            取消任务
+            </summary>
+            <param name="ids"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:RCS.ThirdParty.TM.TaskService.PressTaskAsync">
+            <summary>
+            给TM派发任务的接口
+            </summary>
+            <param name="tMTask"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:RCS.TM.TMApplicationService.CreateTask(RCS.Dtos.TM.CreateTaskDto)">
+            <summary>
+            通过前端提供必要参数创建任务
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+            <exception cref="T:Volo.Abp.UserFriendlyException"></exception>
+        </member>
+        <member name="M:RCS.TM.TMApplicationService.PressTaskAsync(System.String[])">
+            <summary>
+            派发一个/多个任务
+            </summary>
+            <param name="ids"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+    </members>
+</doc>
